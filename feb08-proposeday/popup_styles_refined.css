@@ -1,0 +1,108 @@
+/* ============================================
+   MUSIC POPUP - REFINED
+   ============================================ */
+#start-overlay {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px);
+    z-index: 10000 !important;
+}
+
+.music-popup {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 3rem 4rem;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    animation: popupEntry 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+    max-width: 90%;
+}
+
+@keyframes popupEntry {
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.popup-title {
+    font-family: var(--font-cinematic);
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.popup-subtitle {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2.5rem;
+    letter-spacing: 1px;
+}
+
+.play-start-btn {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+    color: #2d1b2e;
+    font-size: 2.5rem;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(224, 195, 252, 0.4);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.play-start-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    animation: pulse-ring 2s infinite;
+}
+
+.play-start-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 15px 40px rgba(224, 195, 252, 0.6);
+}
+
+.play-start-btn:active {
+    transform: scale(0.95);
+}
+
+.play-start-btn i {
+    margin-left: 6px;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}

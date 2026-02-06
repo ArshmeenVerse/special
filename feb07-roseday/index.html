@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A beautiful interactive rose experience for Rose Day">
+    <title>A Rose for My Bubu 🌹</title>
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Background Music Control -->
+    <div class="music-control">
+        <button id="music-toggle" class="icon-btn" aria-label="Toggle background music">
+            <i class="fas fa-volume-up"></i>
+        </button>
+        <audio id="bg-music" loop preload="auto">
+            <source src="d1.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <!-- Three.js Background Canvas -->
+    <canvas id="world-canvas" aria-hidden="true"></canvas>
+
+    <!-- Overlay if Autoplay Blocked -->
+    <div id="start-overlay" class="overlay">
+        <div class="music-popup">
+            <h2 class="popup-title">Start the Magic? ✨</h2>
+            <p class="popup-subtitle">Turn up the volume for the best experience</p>
+            <button id="start-btn" class="play-start-btn">
+                <i class="fas fa-play"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- SECTION 1: HERO -->
+    <section id="hero" class="hero-section">
+        <div class="hero-content">
+            <div class="hero-rose-container" id="hero-rose">
+                <div class="floating-rose-element" aria-hidden="true">🌹</div>
+            </div>
+            <h1 class="hero-title" id="hero-title">
+                <span class="char">A</span> <span class="char">R</span><span class="char">o</span><span
+                    class="char">s</span><span class="char">e</span>
+                <br>
+                <span class="char">f</span><span class="char">o</span><span class="char">r</span> <span
+                    class="char">M</span><span class="char">y</span> <span class="char">B</span><span
+                    class="char">u</span><span class="char">b</span><span class="char">u</span>
+            </h1>
+            <p class="hero-subtitle" id="hero-subtitle">Because some feelings deserve flowers.</p>
+        </div>
+        <div class="scroll-hint" aria-label="Scroll down">
+            <p>Scroll to Bloom</p>
+            <div class="line" aria-hidden="true"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: BLOOM INTERACTION -->
+    <section id="bloom" class="bloom-section">
+        <div class="bloom-container">
+            <p class="instruction-text">Tap the rose, Bubu</p>
+            <div class="interactive-rose-wrapper" id="bloom-rose" role="button" tabindex="0"
+                aria-label="Click to bloom the rose">
+                <i class="fas fa-seedling closed-state" aria-hidden="true"></i>
+                <div class="bloomed-state hidden" aria-hidden="true">🌹</div>
+            </div>
+            <div class="bloom-message hidden" id="bloom-message" role="alert">
+                <p>This rose is soft, but not as soft as my love for you. 🌹<br>On Rose Day, I don't just give you a
+                    flower… I give you my heart❤️</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: CONSTELLATION -->
+    <section id="constellation" class="constellation-section">
+        <h2 class="section-title">The Colors of Us</h2>
+        <div class="orbs-container" role="group" aria-label="Interactive emotion orbs">
+            <div class="orb red-orb" data-msg="Love that grows quietly, every day." data-color="#ff4d4d" role="button"
+                tabindex="0" aria-label="Red orb - Love">
+                <div class="orb-core" aria-hidden="true"></div>
+                <div class="orb-glow" aria-hidden="true"></div>
+            </div>
+            <div class="orb pink-orb" data-msg="Admiration for who you are." data-color="#ff9a9e" role="button"
+                tabindex="0" aria-label="Pink orb - Admiration">
+                <div class="orb-core" aria-hidden="true"></div>
+                <div class="orb-glow" aria-hidden="true"></div>
+            </div>
+            <div class="orb yellow-orb" data-msg="Happiness when you smile." data-color="#ffd700" role="button"
+                tabindex="0" aria-label="Yellow orb - Happiness">
+                <div class="orb-core" aria-hidden="true"></div>
+                <div class="orb-glow" aria-hidden="true"></div>
+            </div>
+        </div>
+        <div class="orb-message-panel hidden" id="orb-panel" role="dialog" aria-live="polite">
+            <p id="orb-text">Message here...</p>
+            <button id="close-orb" class="close-btn" aria-label="Close message">&times;</button>
+        </div>
+    </section>
+
+    <!-- SECTION 4: ENVELOPE -->
+    <section id="envelope" class="envelope-section">
+        <div class="envelope-container">
+            <div class="envelope-wrapper" id="envelope-wrapper">
+                <div class="envelope-back"></div>
+                <div class="paper">
+                    <div class="paper-content" id="letter-content"></div>
+                </div>
+                <div class="envelope-front"></div>
+                <div class="envelope-flap"></div>
+                <div class="wax-seal">🌹</div>
+            </div>
+            <p class="click-hint">Open me ❤️</p>
+        </div>
+    </section>
+
+    <!-- SECTION 5: GALLERY -->
+    <section id="gallery" class="gallery-section">
+        <h2 class="section-title">Memories in Bloom</h2>
+        <div class="polaroid-container" role="group" aria-label="Photo gallery">
+            <div class="polaroid p1" role="img" aria-label="Memory photo 1">
+                <div class="frame">
+                    <img src="../assets/memory1.jpg" alt="Rose petals and romantic memory" loading="lazy">
+                </div>
+            </div>
+            <div class="polaroid p2" role="img" aria-label="Memory photo 2">
+                <div class="frame">
+                    <img src="../assets/memory2.jpg" alt="Pink roses bouquet" loading="lazy">
+                </div>
+            </div>
+            <div class="polaroid p3" role="img" aria-label="Memory photo 3">
+                <div class="frame">
+                    <img src="../assets/memory3.jpg" alt="Romantic rose arrangement" loading="lazy">
+                </div>
+            </div>
+        </div>
+        <p class="gallery-caption">This rose carries a memory too.</p>
+    </section>
+
+    <!-- SECTION 6: VOICE NOTE -->
+    <section id="voice" class="voice-section">
+        <div class="voice-container">
+            <h3>Close your eyes, Bubu… this one is for you 🌹</h3>
+            <div class="audio-player-minimal">
+                <button id="play-pause-btn" aria-label="Play or pause audio message">
+                    <i class="fas fa-play"></i>
+                </button>
+                <div class="waveform" id="waveform" aria-hidden="true">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+            <audio id="main-audio" preload="auto">
+                <source src="bubu_voice.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </section>
+
+    <!-- SECTION 7: PHOTO BOOTH -->
+    <section id="photobooth" class="photobooth-section">
+        <div class="photobooth-content">
+            <h2 class="section-title">Let's Capture Our Rose Day 🌹</h2>
+            <p class="section-subtitle">One smile. One moment. One memory.</p>
+
+            <!-- Camera UI -->
+            <div class="camera-container">
+
+                <!-- Start Screen -->
+                <button id="start-camera-btn" class="camera-btn primary">
+                    <i class="fas fa-camera"></i> Prepare Rose Shot
+                </button>
+
+                <!-- Live Preview -->
+                <div id="camera-preview-container" class="preview-box hidden">
+                    <video id="camera-stream" autoplay playsinline muted></video>
+                    <div id="countdown-overlay" class="overlay-count hidden">3</div>
+                    <div id="flash-overlay" class="overlay-flash"></div>
+                    <div class="camera-controls">
+                        <button id="capture-btn" class="action-btn pulse-btn">
+                            Start Rose Shot 🌹
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Result View (Photo Strip) -->
+                <div id="result-container" class="result-box hidden">
+                    <img id="photo-strip-output" src="" alt="Rose Day Photo Strip" class="photo-strip shadow-lg">
+                    <div class="result-actions">
+                        <button id="save-btn" class="action-btn save-btn">
+                            <i class="fas fa-download"></i> Save Our Memory 💌
+                        </button>
+                        <button id="retake-btn" class="action-btn secondary">
+                            Retake
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7.5: SECRET COMPLIMENTS -->
+    <section id="compliments" class="compliments-section">
+        <div class="compliments-container">
+            <h3 class="mini-heading">One more rose for you 🌸</h3>
+
+            <button id="compliment-btn" class="compliment-btn">
+                <span class="btn-text">One more rose 🌸</span>
+                <span class="btn-glow"></span>
+            </button>
+
+            <div class="compliment-display">
+                <p id="compliment-text" class="hidden"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: BUBU WRITES BACK -->
+    <section id="writes-back" class="writes-back-section">
+        <div class="writes-back-container">
+            <h2 class="section-title">Now… can I get a rose from you? 🌸</h2>
+            <p class="section-subtitle">Write something for me, Bubu.</p>
+
+            <div class="message-card" id="message-ui-card">
+                <!-- Input State -->
+                <div id="message-input-state">
+                    <textarea id="bubu-message" placeholder="Write anything… even one line makes me smile."
+                        maxlength="500"></textarea>
+                    <div class="char-counter"><span id="char-count">0</span>/500</div>
+                    <button id="send-rose-btn" class="send-btn">
+                        Send My Rose 🌹
+                    </button>
+                </div>
+
+                <!-- Success/Display State -->
+                <div id="message-display-state" class="hidden">
+                    <div class="saved-message-content">
+                        <i class="fas fa-quote-left quote-icon"></i>
+                        <p id="saved-message-text"></p>
+                        <i class="fas fa-quote-right quote-icon"></i>
+                    </div>
+                    <div class="message-footer">
+                        <span class="message-timestamp" id="msg-timestamp"></span>
+                        <div class="watermark-heart">❤️</div>
+                    </div>
+                    <p class="post-submit-hint">Your rose is safe with me ❤️<br><span class="sub-hint">I'll read this
+                            whenever I miss you.</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9: CINEMATIC FINALE -->
+    <section id="finale" class="finale-section">
+        <div class="finale-content">
+            <h2 class="finale-main-text">
+                Two roses now.<br>
+                One from me…<br>
+                One from you.
+            </h2>
+
+            <p class="finale-sub-text">This is just the beginning, Bubu 🌹</p>
+
+            <div class="heart-pulse">❤️</div>
+
+            <!-- Optional Transition -->
+            <a href="../feb08-proposeday/index.html" class="next-day-btn hidden">
+                Continue to Propose Day 💍
+            </a>
+
+            <footer class="finale-footer">
+                <time datetime="2025-02-07">Rose Day – Feb 7</time>
+            </footer>
+        </div>
+    </section>
+
+    <!-- Scripts - Load in optimal order -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+    <script src="photobooth.js"></script>
+</body>
+
+</html>

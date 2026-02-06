@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Bubu ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Background Particles Container -->
+    <div id="particles-container"></div>
+
+    <!-- Music Toggle -->
+    <div class="music-toggle" id="music-toggle">
+        <i class="fas fa-music"></i>
+    </div>
+    <audio id="bg-music" loop>
+        <!-- Placeholder for music - User can replace this source -->
+        <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-moment-116.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <h1 class="animate-fade-in">For My Bubu ❤️</h1>
+        <p class="subtext animate-fade-in-delay">This little world unlocks only for you</p>
+
+        <div class="input-group animate-up">
+            <input type="password" id="password-input" placeholder="Enter our secret…">
+            <button id="unlock-btn">Unlock My Heart</button>
+        </div>
+
+        <p class="hint-text" id="hint-msg"></p>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="success-overlay">
+        <div class="heartbeat">❤️</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
