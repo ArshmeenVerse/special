@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A Sweet Chocolate Day Surprise for Bubu">
+    <title>Chocolate Day | For My Bubu 🍫</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Background Elements -->
+    <div class="bg-gradient"></div>
+    <div class="cocoa-dust" aria-hidden="true"></div>
+
+    <!-- Music Control -->
+    <div class="music-control">
+        <button id="music-toggle" aria-label="Toggle Music">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+    <audio id="bg-music" loop>
+        <source src="../assets/music/chocolate_theme.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- SECTION 1: HERO INTRO -->
+    <section id="s1-hero" class="scene">
+        <div class="hero-content">
+            <div class="chocolate-bar-3d">
+                <div class="choc-wrapper">
+                    <div class="choc-piece"></div>
+                    <div class="choc-piece"></div>
+                    <div class="choc-piece"></div>
+                    <div class="choc-piece"></div>
+                    <div class="choc-piece"></div>
+                    <div class="choc-piece"></div>
+                </div>
+            </div>
+            <h1 class="hero-title fade-in">A Little Sweetness for My Bubu 🍫</h1>
+            <p class="hero-subtitle fade-in-delay">Some days taste better with you.</p>
+            <div class="scroll-down fade-in-delay">
+                <span>Scroll for sweetness</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: BREAK THE CHOCOLATE -->
+    <section id="s2-break" class="scene">
+        <div class="interactive-container">
+            <h2 class="section-title">Break it, Bubu 🍫</h2>
+            <div class="breakable-chocolate" id="crack-chocolate">
+                <div class="crack-line"></div>
+                <span class="click-hint">Click to Break</span>
+            </div>
+            <div id="hidden-messages" class="messages-container">
+                <!-- Messages will be injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: SWEETNESS METER -->
+    <section id="s3-meter" class="scene">
+        <div class="meter-container">
+            <h2 class="section-title">How sweet are you today?</h2>
+            <div class="emoji-display" id="meter-emoji">😐</div>
+            <input type="range" min="1" max="5" value="1" class="sweet-slider" id="sweetness-slider">
+            <p id="meter-text" class="meter-text">Not sweet enough...</p>
+        </div>
+    </section>
+
+    <!-- SECTION 4: VIRTUAL CHOCOLATE BOX -->
+    <section id="s4-box" class="scene">
+        <div class="box-wrapper">
+            <div class="gift-box closed" id="choco-box">
+                <div class="lid">
+                    <div class="ribbon"></div>
+                </div>
+                <div class="box-base">
+                    <div class="chocolates-grid">
+                        <div class="choco-item" data-type="milk">
+                            <div class="choco-visual milk"></div>
+                            <span class="choco-label">Comfort</span>
+                        </div>
+                        <div class="choco-item" data-type="dark">
+                            <div class="choco-visual dark"></div>
+                            <span class="choco-label">Depth</span>
+                        </div>
+                        <div class="choco-item" data-type="caramel">
+                            <div class="choco-visual caramel"></div>
+                            <span class="choco-label">Warmth</span>
+                        </div>
+                        <div class="choco-item" data-type="white">
+                            <div class="choco-visual white"></div>
+                            <span class="choco-label">Softness</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="instruction-text">Tap to open your gift 🎁</p>
+            </div>
+            <div id="choco-message-modal" class="glass-modal hidden">
+                <p id="choco-msg-text"></p>
+                <button id="close-choco-modal" class="text-btn">Close</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: OUR SWEET MOMENTS -->
+    <section id="s5-moments" class="scene">
+        <h2 class="section-title">Our Sweet Moments 🍫</h2>
+        <div class="polaroid-gallery">
+            <div class="polaroid-card p1">
+                <div class="photo-frame">
+                    <img src="../assets/images/mem1.jpg" alt="Sweet Moment 1"
+                        onerror="this.src='https://placehold.co/300x400/3e2723/d4af37?text=Sweet+Moment'">
+                </div>
+                <p class="handwritten">Coffee dates ☕</p>
+            </div>
+            <div class="polaroid-card p2">
+                <div class="photo-frame">
+                    <img src="../assets/images/mem2.jpg" alt="Sweet Moment 2"
+                        onerror="this.src='https://placehold.co/300x400/3e2723/d4af37?text=Us'">
+                </div>
+                <p class="handwritten">Just us ❤️</p>
+            </div>
+            <div class="polaroid-card p3">
+                <div class="photo-frame">
+                    <img src="../assets/images/mem3.jpg" alt="Sweet Moment 3"
+                        onerror="this.src='https://placehold.co/300x400/3e2723/d4af37?text=Travel'">
+                </div>
+                <p class="handwritten">Adventures 🌍</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: CUSTOM VOICE MESSAGE -->
+    <section id="s6-voice" class="scene">
+        <div class="voice-card glass-panel">
+            <h2 class="voice-title">A Sweet Message From Me 🎧</h2>
+            <div class="audio-player">
+                <button id="play-voice-btn" class="play-btn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <div class="progress-track">
+                    <div id="audio-progress" class="progress-fill"></div>
+                </div>
+                <span class="time-stamp">0:00</span>
+            </div>
+            <audio id="voice-msg-audio">
+                <source src="../assets/audio/voice_message_chocolate.mp3" type="audio/mpeg">
+                <!-- Fallback if audio missing -->
+            </audio>
+            <p id="voice-subtext" class="subtext">Wish I could feed you one right now.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 7: BUBU WRITES BACK -->
+    <section id="s7-write" class="scene">
+        <div class="letter-card paper-texture">
+            <h2 class="letter-title">Now tell me something sweet 💌</h2>
+            <p class="letter-subtitle">Write anything that melts your heart.</p>
+
+            <form id="sweet-message-form">
+                <textarea id="bubu-sweet-msg" placeholder="Write your sweetest words here..."
+                    maxlength="400"></textarea>
+                <div class="char-count"><span id="current-count">0</span>/400</div>
+                <button type="submit" class="submit-btn">Send Sweetness 🍫</button>
+            </form>
+
+            <div id="submission-success" class="hidden">
+                <i class="fas fa-heart pulse"></i>
+                <p>Your sweetness is saved with me.</p>
+                <p id="submission-date" class="date-stamp"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9: PHOTO BOOTH -->
+    <section id="s9-photobooth" class="scene">
+        <div class="booth-container">
+            <h2 class="section-title">Our Sweet Memory 🍫</h2>
+            <p class="section-subtitle">Let's capture this moment.</p>
+
+            <div id="camera-preview-container" class="glass-card">
+                <div class="video-wrapper">
+                    <video id="camera-stream" autoplay playsinline muted></video>
+                    <div id="countdown-overlay" class="hidden">3</div>
+                    <div id="flash-overlay"></div>
+                </div>
+
+                <div class="controls">
+                    <button id="start-camera-btn" class="glow-btn">Capture Our Sweetness 📸</button>
+                    <button id="capture-btn" class="glow-btn hidden">Click (3 Photos)</button>
+                </div>
+            </div>
+
+            <div id="result-container" class="glass-card hidden">
+                <img id="photo-strip-output" src="" alt="Photo strip">
+                <div class="save-controls">
+                    <button id="save-btn" class="glow-btn">Save Memory 💌</button>
+                    <button id="retake-btn" class="text-btn">Retake</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: SOFT CLOSING -->
+    <section id="s8-close" class="scene">
+        <div class="closing-content">
+            <h1 class="closing-text">Stay sweet.<br>Stay mine.</h1>
+            <p class="final-signature">With love, for my Bubu</p>
+        </div>
+    </section>
+
+    <script src="photobooth.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

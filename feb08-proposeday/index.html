@@ -18,6 +18,9 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
     <!-- Spline Viewer -->
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.59/build/spline-viewer.js"></script>
 
@@ -30,10 +33,9 @@
 
     <!-- Music Toggle -->
     <div class="music-control">
-        <button id="music-toggle" aria-label="Pause Music" style="opacity: 1;">
+        <button id="music-toggle" aria-label="Pause Music">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="feather feather-music">
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 18V5l12-2v13"></path>
                 <circle cx="6" cy="18" r="3"></circle>
                 <circle cx="18" cy="16" r="3"></circle>
@@ -43,17 +45,16 @@
 
     <!-- Audio Element -->
     <audio id="bg-music" loop preload="auto">
-        <source src="d1.mp3" type="audio/mpeg">
+        <source src="perfect.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
-    <!-- Overlay if Autoplay Blocked -->
     <!-- Overlay if Autoplay Blocked -->
     <div id="start-overlay" class="overlay">
         <div class="music-popup">
             <h2 class="popup-title">Start the Magic? ✨</h2>
             <p class="popup-subtitle">Turn up the volume for the best experience</p>
-            <button id="start-btn" class="play-start-btn">
+            <button id="start-btn" class="play-start-btn" aria-label="Start Experience">
                 <i class="fas fa-play"></i>
             </button>
         </div>
@@ -103,7 +104,6 @@
     <section id="s3-memory" class="scene">
         <h2 class="section-title fade-in">Some choices feel easy.</h2>
         <div class="gallery-container">
-            <!-- Placeholders for images -->
             <div class="polaroid p1">
                 <img src="../assets/images/mem1.jpg" alt="Memory 1"
                     onerror="this.src='https://placehold.co/300x400/2a1b3d/e0c3fc?text=Memory+1'">
@@ -138,7 +138,6 @@
     <!-- SECTION 5: SPLINE & PROPOSAL -->
     <section id="s5-proposal" class="scene">
         <div class="spline-wrapper" aria-hidden="true">
-            <!-- Placeholder Spline - User should replace URL -->
             <spline-viewer url="https://prod.spline.design/6Wq1Q7YGyM-iab9j/scene.splinecode"></spline-viewer>
         </div>
         <div class="proposal-overlay">
@@ -259,7 +258,7 @@
                     <div class="node-label">When We First Met</div>
                     <div class="node-card glass-modal" role="dialog" aria-labelledby="card-title-1">
                         <div class="card-img-container">
-                            <img src="../assets/images/first_meet.jpg" alt="When We First Met" class="timeline-img">
+                            <img src="assets/images/first_meet.jpg" alt="When We First Met" class="timeline-img">
                         </div>
                         <div class="card-text-container">
                             <h3 id="card-title-1">When We First Met</h3>
@@ -268,77 +267,114 @@
                     </div>
                 </div>
 
-                <!-- Node 2: First Call -->
+                <!-- Node 2: First Video Call -->
                 <div class="timeline-node" data-id="2" tabindex="0" role="button" aria-expanded="false">
-                    <div class="node-icon" aria-hidden="true"><i class="fas fa-phone-alt"></i></div>
-                    <div class="node-label">First Call</div>
+                    <div class="node-icon" aria-hidden="true"><i class="fas fa-video"></i></div>
+                    <div class="node-label">First Video Call</div>
                     <div class="node-card glass-modal" role="dialog" aria-labelledby="card-title-2">
                         <div class="card-img-container">
-                            <div class="card-img-placeholder"
-                                style="background: linear-gradient(45deg, #a18cd1, #fbc2eb);">
-                                <i class="fas fa-phone-alt"></i>
-                            </div>
+                            <img src="assets/images/mem1.jpg" alt="Video Call Moments" class="timeline-img">
                         </div>
                         <div class="card-text-container">
-                            <h3 id="card-title-2">First Call</h3>
-                            <p class="caption">"Discussion on mint and i clicked this image 😍."</p>
+                            <h3 id="card-title-2">Distance Didn't Matter</h3>
+                            <p class="caption">"Hours felt like minutes when I was looking at you.(MINT)"</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Node: First Text -->
-                <div class="timeline-node" data-id="new" tabindex="0" role="button" aria-expanded="false">
-                    <div class="node-icon" aria-hidden="true"><i class="fas fa-comment-dots"></i></div>
-                    <div class="node-label">First Text</div>
-                    <div class="node-card glass-modal" role="dialog" aria-labelledby="card-title-new">
-                        <div class="card-img-container">
-                            <div class="card-img-placeholder"
-                                style="background: linear-gradient(45deg, #ff9a9e, #fecfef);">
-                                <i class="fas fa-comment-dots"></i>
-                            </div>
-                        </div>
-                        <div class="card-text-container">
-                            <h3 id="card-title-new">First Text</h3>
-                            <p class="caption">"That first notification that made my heart skip a beat ❤️."</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Node 3: First Trip -->
+                <!-- Node 3: First Text -->
                 <div class="timeline-node" data-id="3" tabindex="0" role="button" aria-expanded="false">
-                    <div class="node-icon" aria-hidden="true"><i class="fas fa-plane"></i></div>
-                    <div class="node-label">First Trip</div>
+                    <div class="node-icon" aria-hidden="true"><i class="fas fa-comments"></i></div>
+                    <div class="node-label">First Chat</div>
                     <div class="node-card glass-modal" role="dialog" aria-labelledby="card-title-3">
                         <div class="card-img-container">
-                            <div class="card-img-placeholder"
-                                style="background: linear-gradient(45deg, #84fab0, #8fd3f4);">
-                                <i class="fas fa-plane"></i>
-                            </div>
+                            <img src="assets/images/mem2.jpg" alt="First Chats" class="timeline-img">
                         </div>
                         <div class="card-text-container">
-                            <h3 id="card-title-3">First Trip</h3>
-                            <p class="caption">"Exploring the udaipur, but I was only looking at you 👀."</p>
+                            <h3 id="card-title-3">20 September 2025</h3>
+                            <p class="caption">"Every notification from you made my heart skip a beat."</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Node 4: First Fight -->
+                <!-- Node 4: Udaipur Trip -->
                 <div class="timeline-node" data-id="4" tabindex="0" role="button" aria-expanded="false">
-                    <div class="node-icon" aria-hidden="true"><i class="fas fa-heart-broken"></i></div>
-                    <div class="node-label">First Fight</div>
+                    <div class="node-icon" aria-hidden="true"><i class="fas fa-mountain"></i></div>
+                    <div class="node-label">Udaipur Trip</div>
                     <div class="node-card glass-modal" role="dialog" aria-labelledby="card-title-4">
                         <div class="card-img-container">
-                            <div class="card-img-placeholder"
-                                style="background: linear-gradient(45deg, #f093fb, #f5576c);">
-                                <i class="fas fa-heart-broken"></i>
-                            </div>
+                            <img src="assets/images/mem3.jpg" alt="Udaipur Trip" class="timeline-img">
                         </div>
                         <div class="card-text-container">
-                            <h3 id="card-title-4">First Fight</h3>
-                            <p class="caption">"Even when we were apart, my heart was still yours."</p>
+                            <h3 id="card-title-4">Adventure Begins</h3>
+                            <p class="caption">"Sunrise are beautiful, but I was only looking at you."</p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Node 5: First Fight -->
+                <div class="timeline-node" data-id="5" tabindex="0" role="button" aria-expanded="false">
+                    <div class="node-icon" aria-hidden="true"><i class="fas fa-ring"></i></div>
+                    <div class="node-label">First Fight</div>
+                    <div class="node-card glass-modal" role="dialog" aria-labelledby="card-title-5">
+                        <div class="card-img-container">
+                            <img src="assets/images/mem4.png" alt="Proposal on Rock" class="timeline-img">
+                        </div>
+                        <div class="card-text-container">
+                            <h3 id="card-title-5">I Choose You</h3>
+                            <p class="caption">"My poor memory, forget your name but not you!."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 11: CUSTOM VOICE MESSAGE -->
+    <section id="s11-voice-message" class="scene-scrollable relative-flow hidden-section">
+        <div class="voice-container glass-card">
+            <h2 class="voice-title">A Little Something From Me 🎧</h2>
+            <p class="voice-subtitle">Close your eyes for a moment…</p>
+
+            <div class="audio-player-wrapper">
+                <div class="audio-controls">
+                    <button id="voice-play-btn" class="voice-play-btn" aria-label="Play Message">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <div class="progress-container">
+                        <div id="voice-progress-bar" class="progress-bar"></div>
+                    </div>
+                    <span id="voice-time" class="time-display">0:00</span>
+                </div>
+                <audio id="custom-voice-msg" preload="auto">
+                    <source src="assets/audio/voice_message.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            <p id="voice-end-msg" class="voice-end-msg hidden">I meant every word.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 12: BUBU WRITES BACK -->
+    <section id="s12-response" class="scene-scrollable relative-flow hidden-section">
+        <div class="response-container paper-card">
+            <h2 class="response-title">Now… tell me something 💌</h2>
+            <p class="response-subtitle">I want to hear your heart too.</p>
+
+            <form id="response-form" class="response-form">
+                <div class="input-group">
+                    <textarea id="bubu-message" placeholder="Write anything… even one line makes me smile."
+                        maxlength="500" required></textarea>
+                    <div class="char-counter"><span id="char-count">0</span>/500</div>
+                </div>
+                <button type="submit" class="glow-btn rose-btn">Send My Words 💖</button>
+            </form>
+
+            <div id="response-saved" class="response-saved hidden">
+                <p class="saved-msg">Your words are safe with me.</p>
+                <div class="saved-text-display"></div>
+                <p id="response-timestamp" class="timestamp"></p>
             </div>
         </div>
     </section>

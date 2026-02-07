@@ -1,0 +1,583 @@
+:root {
+    --bg-color: #F5E6DA;
+    --card-bg: #FFF8F0;
+    --accent-peach: #FAD4C0;
+    --text-color: #5D4037;
+    --highlight: #8D6E63;
+    --glow-color: rgba(255, 230, 200, 0.6);
+    --font-main: 'Quicksand', sans-serif;
+    --font-hand: 'Nunito', sans-serif;
+    /* Using Nunito as a soft alternative to handwriting if needed, or stick to Quicksand */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    overflow-x: hidden;
+    transition: background-color 1.5s ease;
+}
+
+#ambient-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Richer, multi-layered gradient for depth */
+    background:
+        radial-gradient(circle at 15% 50%, rgba(255, 230, 210, 0.4), transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(255, 200, 180, 0.3), transparent 50%),
+        linear-gradient(135deg, #F5E6DA 0%, #FFF0E6 100%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Decorative Blobs for fullness */
+#ambient-glow::before,
+#ambient-glow::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: floatBlob 20s infinite alternate;
+}
+
+#ambient-glow::before {
+    width: 400px;
+    height: 400px;
+    background: #FFD1BC;
+    top: -100px;
+    right: -100px;
+}
+
+#ambient-glow::after {
+    width: 300px;
+    height: 300px;
+    background: #E8D5C8;
+    bottom: -50px;
+    left: -50px;
+    animation-delay: -10s;
+}
+
+@keyframes floatBlob {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(30px, 50px) scale(1.1);
+    }
+}
+
+#particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    /* Add a subtle pattern overlay */
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238D6E63' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='13' cy='13' r='1'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.cozy-frame {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 15px solid white;
+    box-sizing: border-box;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+@media (max-width: 600px) {
+    .cozy-frame {
+        border-width: 8px;
+    }
+}
+
+/* Decorative Stickers */
+.decorative-cloud,
+.decorative-item {
+    position: absolute;
+    font-size: 3rem;
+    opacity: 0.6;
+    animation: floatBlob 6s ease-in-out infinite alternate;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(1px);
+}
+
+.decorative-item {
+    font-size: 1.5rem;
+    color: var(--highlight);
+}
+
+.particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    filter: blur(5px);
+    animation: floatParticle linear infinite;
+    opacity: 0.6;
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.6;
+    }
+
+    80% {
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: translateY(-100vh) translateX(20px);
+        opacity: 0;
+    }
+}
+
+.main-container {
+    max-width: 800px;
+    /* Increased from 600px for fuller feel */
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Typography - Bolder & Larger */
+h1 {
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+    font-weight: 600;
+    color: var(--highlight);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+p {
+    font-weight: 400;
+    line-height: 1.6;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.subtext {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.fade-in {
+    animation: fadeIn 1.2s ease-in-out forwards;
+    opacity: 0;
+}
+
+.fade-in-delay {
+    animation: fadeIn 1.2s ease-in-out 0.5s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.fade-in-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hidden-message {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+/* Section Components */
+section {
+    min-height: auto;
+    /* Remove forced height to reduce gaps */
+    padding: 60px 20px;
+    /* Consistent padding */
+    margin-bottom: 0;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.screen-section {
+    min-height: 90vh;
+    /* Keep Hero and Footer tall */
+    justify-content: center;
+}
+
+/* Decorative Dividers */
+.section-divider {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    margin: 0;
+    color: var(--card-bg);
+    /* Match card background for organic feel */
+}
+
+.section-divider svg {
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 50px;
+}
+
+.screen-section {
+    min-height: 100vh;
+}
+
+/* Teddy Styling - Scaled Up */
+.teddy-container {
+    position: relative;
+    width: 380px;
+    /* Increased from 300px */
+    height: 380px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#teddy-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 40px rgba(141, 110, 99, 0.25));
+    /* Stronger shadow */
+}
+
+.breathing-animation {
+    animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+/* Hug Button - Simple Tap Interaction */
+.hug-button {
+    padding: 20px 40px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #FAD4C0, #f3b090);
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 25px rgba(141, 110, 99, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 30px auto;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.hug-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.hug-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.hug-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(141, 110, 99, 0.4);
+}
+
+.hug-button:active {
+    transform: scale(0.95);
+}
+
+.hug-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.hug-icon {
+    font-size: 1.8rem;
+    animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-15deg);
+    }
+
+    75% {
+        transform: rotate(15deg);
+    }
+}
+
+.hug-text {
+    position: relative;
+    z-index: 1;
+}
+
+.instruction-text {
+    font-size: 1.1rem;
+    color: var(--highlight);
+    margin-bottom: 10px;
+}
+
+
+/* Comfort Cards - Scaled & Filled */
+.cards-container {
+    display: flex;
+    gap: 20px;
+    /* Increased gap */
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+    /* Wider container */
+}
+
+.comfort-card {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 24px;
+    /* More rounded */
+    padding: 30px;
+    /* More padding */
+    width: 160px;
+    /* Wider */
+    height: 180px;
+    /* Taller */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 10px 30px rgba(141, 110, 99, 0.08);
+    /* Deeper shadow */
+}
+
+.comfort-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.comfort-card.expanded {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    background: white;
+}
+
+.card-back {
+    display: none;
+    margin-top: 10px;
+}
+
+.comfort-card.expanded .card-back {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.comfort-card.expanded .card-front {
+    display: none;
+    /* Optional: hide front or keep it */
+}
+
+/* Paper Card for Letters */
+.paper-card {
+    background: #FFFDF9;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    /* Soft shadow */
+    width: 100%;
+    max-width: 500px;
+    min-height: 200px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* Audio Player */
+.audio-player {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 400px;
+}
+
+#play-pause-btn {
+    border: none;
+    background: var(--accent-peach);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+#play-pause-btn:hover {
+    background: var(--highlight);
+}
+
+.progress-bar-container {
+    flex-grow: 1;
+    height: 5px;
+    background: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--accent-peach);
+}
+
+/* Inputs */
+.reply-card {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+textarea {
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    background: white;
+    font-family: var(--font-main);
+    resize: none;
+    height: 150px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--accent-peach);
+    box-shadow: 0 0 10px var(--glow-color);
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, var(--accent-peach), #f3b090);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* Rename Input */
+.input-wrapper {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+#teddy-name-input {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-family: var(--font-main);
+}

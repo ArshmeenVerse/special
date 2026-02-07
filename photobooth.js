@@ -31,6 +31,11 @@ class PhotoBooth {
     }
 
     init() {
+        console.log("Photo Booth initializing...");
+        if (!this.video) console.error("Camera video element not found!");
+        if (!this.previewContainer) console.error("Preview container not found!");
+        if (!this.startBtn) console.error("Start button not found!");
+
         // Safe binding with optional chaining
         this.startBtn?.addEventListener('click', () => this.startCamera());
         this.captureBtn?.addEventListener('click', () => this.startCaptureSequence());
@@ -39,12 +44,18 @@ class PhotoBooth {
     }
 
     async startCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert("Camera access is not supported in this browser or context (requires HTTPS or localhost).");
+            return;
+        }
+
         try {
             if (this.startBtn) {
-                this.startBtn.classList.add('loading');
-                this.startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Accessing Camera...';
+                this.startBtn.disabled = true;
+                this.startBtn.innerText = 'Starting Camera...';
             }
 
+            console.log("Requesting camera access...");
             this.stream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     width: { ideal: 1280 },
@@ -53,34 +64,36 @@ class PhotoBooth {
                 },
                 audio: false
             });
+            console.log("Camera access granted.");
 
             this.video.srcObject = this.stream;
 
             this.video.onloadedmetadata = () => {
-                this.video.play();
-                if (this.startBtn) this.startBtn.classList.add('hidden');
-                this.previewContainer.classList.remove('hidden');
-                this.captureBtn.classList.remove('hidden');
+                console.log("Video metadata loaded. Playing...");
+                this.video.play().then(() => {
+                    if (this.startBtn) this.startBtn.classList.add('hidden');
+                    this.previewContainer.classList.remove('hidden');
+                    this.captureBtn.classList.remove('hidden');
 
-                // Set canvas size to match video
-                this.canvas.width = this.video.videoWidth;
-                this.canvas.height = this.video.videoHeight;
+                    // Set canvas size to match video
+                    this.canvas.width = this.video.videoWidth;
+                    this.canvas.height = this.video.videoHeight;
 
-                // Entrance animation for preview
-                gsap.from(this.previewContainer, {
-                    scale: 0.9,
-                    opacity: 0,
-                    duration: 0.6,
-                    ease: "back.out(1.2)"
-                });
+                    // Entrance animation
+                    if (typeof gsap !== 'undefined') {
+                        gsap.from(this.previewContainer, {
+                            scale: 0.9, opacity: 0, duration: 0.6, ease: "back.out(1.2)"
+                        });
+                    }
+                }).catch(e => console.error("Play failed:", e));
             };
         } catch (err) {
-            console.error("Camera access denied:", err);
+            console.error("Camera access denied or error:", err);
             if (this.startBtn) {
-                this.startBtn.classList.remove('loading');
-                this.startBtn.innerText = "Camera access needed 🌹";
+                this.startBtn.disabled = false;
+                this.startBtn.innerText = "Camera Access Needed 📸";
             }
-            alert("Please allow camera access to capture our memory.");
+            alert(`Could not access camera: ${err.message}. Please allow permissions.`);
         }
     }
 
@@ -223,13 +236,16 @@ class PhotoBooth {
 
             // Context Detection
             const isProposeDay = document.title.includes("Question") || document.title.includes("Propose");
+            const isTeddyDay = document.title.includes("Teddy") || window.location.pathname.includes("teddyday");
 
             // Title
             ctx.font = "bold 40px 'Cinzel', serif";
-            // If Propose Day, maybe use specific text, but "Rose Day Memory" is what user requested for Propose Day.
-            // Wait, the user requested "Our Rose Day Memory" for Propose Day section title. 
-            // But they complained "removed photo both for roseday".
-            const titleText = "Rose Day 🌹";
+            let titleText = "Rose Day 🌹";
+            if (isTeddyDay) {
+                titleText = "Teddy Day 🧸";
+            } else if (isProposeDay) {
+                titleText = "Rose Day 🌹";
+            }
             ctx.fillText(titleText, centerX, footerStart);
 
             // Subtitle
@@ -242,7 +258,7 @@ class PhotoBooth {
             ctx.font = "italic 24px 'Playfair Display', serif";
             ctx.fillStyle = "#8b5a5a";
 
-            // If Propose Day page, show "Chosen on...", otherwise show current date or just "Feb 7, 2026"
+            // If Propose Day page, show "Chosen on...", otherwise show current date
             if (isProposeDay) {
                 const savedDateStr = localStorage.getItem('proposeDay_accepted');
                 const dateObj = savedDateStr ? new Date(savedDateStr) : new Date();
@@ -326,9 +342,13 @@ class PhotoBooth {
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
 
+        // Context detection for particles
+        const isTeddyDay = document.title.includes("Teddy") || window.location.pathname.includes("teddyday");
+        const particles = isTeddyDay ? ['🧸', '❤️', '✨'] : ['🌹', '✨'];
+
         for (let i = 0; i < 30; i++) {
             const el = document.createElement('div');
-            el.textContent = Math.random() > 0.5 ? '🌹' : '✨';
+            el.textContent = particles[Math.floor(Math.random() * particles.length)];
             el.style.position = 'absolute';
             el.style.fontSize = Math.random() * 20 + 20 + 'px';
             el.style.left = centerX + 'px';

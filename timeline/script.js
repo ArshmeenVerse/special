@@ -137,6 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '../feb07-roseday/index.html';
         } else if (title === 'Propose Day') {
             window.location.href = '../feb08-proposeday/index.html';
+        } else if (title === 'Chocolate Day') {
+            window.location.href = '../feb09-chocolateday/index.html';
+        } else if (title === 'Teddy Day') {
+            window.location.href = '../feb10-teddyday/index.html';
+        } else if (title === 'Promise Day') {
+            window.location.href = '../feb11-promiseday/index.html';
         } else {
             alert(`Opening content for: ${title} (Next Step: Create these pages!)`);
         }

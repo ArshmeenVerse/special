@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Teddy Day, Bubu! 🧸</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="photobooth.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tenor Embed Script -->
+    <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+</head>
+
+<body>
+
+    <!-- Background Elements -->
+    <div id="ambient-glow"></div>
+    <div id="particles-container"></div>
+    <div class="cozy-frame"></div>
+
+    <!-- Main Content Wrapper -->
+    <main>
+        <!-- Section 1: Hero (Soft Arrival) -->
+        <section id="hero-section" class="screen-section">
+            <div class="teddy-container">
+                <!-- Teddy Video -->
+                <video autoplay loop muted playsinline style="width: 100%; height: auto; object-fit: contain;">
+                    <source src="assets/teddy-hero.mp4" type="video/mp4">
+                </video>
+                <div class="glow-effect"></div>
+            </div>
+
+            <div class="hero-text">
+                <h2 id="teddy-name-label">Your Bubu 🧸</h2>
+                <h1 class="fade-in">A hug, just for my Bubu.</h1>
+                <p class="subtext fade-in-delay">Even when I’m not there… this is.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Hold to Hug -->
+        <section id="hug-section" class="content-section">
+            <div class="decorative-item" style="left: 10%; top: 20%;">✨</div>
+            <div class="decorative-item" style="right: 15%; bottom: 20%;">✨</div>
+
+            <p class="instruction-text">Tap for a Hug 🧸</p>
+            <button id="hug-btn" class="hug-button">
+                <span class="hug-icon">🤗</span>
+                <span class="hug-text">Hug Me</span>
+            </button>
+            <p id="hug-message" class="hidden-message">That's how tight I'd hug you.</p>
+
+            <!-- Bear Hug Animation Result -->
+            <div id="hug-animation-result" class="hidden-message" style="margin-top: 2rem; text-align: center;">
+                <video id="hug-video" autoplay loop muted playsinline
+                    style="max-width: 300px; width: 100%; border-radius: 20px; box-shadow: 0 8px 32px rgba(141, 110, 99, 0.3);">
+                    <source src="assets/bear-hug.mp4" type="video/mp4">
+                </video>
+            </div>
+        </section>
+
+        <!-- Section 3: Rename Teddy -->
+        <section id="rename-section" class="content-section">
+            <div class="decorative-item" style="left: 20%; top: -10%;">🎀</div>
+            <h2>Do you want to rename Your Bubu?</h2>
+            <div class="input-wrapper">
+                <input type="text" id="teddy-name-input" placeholder="Your Bubu" value="Your Bubu">
+                <button id="save-name-btn"><i class="fas fa-check"></i></button>
+            </div>
+        </section>
+
+        <!-- Section 4: Comfort Cards -->
+        <section id="comfort-section" class="content-section">
+            <h2 class="section-title">Whenever you feel…</h2>
+            <div class="decorative-cloud" style="right: -5%; top: 10%; font-size: 4rem;">☁️</div>
+            <div class="cards-container">
+                <div class="comfort-card" data-type="overwhelmed">
+                    <div class="card-front">
+                        <span class="emoji">😔</span>
+                        <span>Overwhelmed</span>
+                    </div>
+                    <div class="card-back">
+                        <p>I’ll listen. Always.</p>
+                    </div>
+                </div>
+                <div class="comfort-card" data-type="tired">
+                    <div class="card-front">
+                        <span class="emoji">😴</span>
+                        <span>Tired</span>
+                    </div>
+                    <div class="card-back">
+                        <p>Rest here. You don’t have to be strong.</p>
+                    </div>
+                </div>
+                <div class="comfort-card" data-type="lost">
+                    <div class="card-front">
+                        <span class="emoji">💭</span>
+                        <span>Lost in thoughts</span>
+                    </div>
+                    <div class="card-back">
+                        <p>We’ll figure it out together.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Personal Letter -->
+        <section id="letter-section" class="content-section">
+            <div class="paper-card">
+                <div class="decorative-item" style="right: 20px; top: 20px; font-size: 1.2rem;">📌</div>
+                <div class="typewriter-text" id="letter-content">
+                    <!-- Text will be typed here via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Voice Message -->
+        <section id="voice-section" class="content-section">
+            <div class="decorative-item" style="left: 10%; bottom: 10%;">💤</div>
+            <h2>Close your eyes for a moment…</h2>
+            <div class="audio-player">
+                <button id="play-pause-btn"><i class="fas fa-play"></i></button>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="audio-progress"></div>
+                </div>
+                <audio id="voice-msg" src="assets/voice_message.mp3"></audio> <!-- Placeholder -->
+            </div>
+            <p id="voice-end-msg" class="hidden-message">I’m right here.</p>
+        </section>
+
+        <!-- Section 7: Bubu Writes Back -->
+        <section id="reply-section" class="content-section">
+            <h2>What makes you feel safe? 💌</h2>
+            <p class="subtext">I want to be that place for you.</p>
+
+            <div class="reply-card">
+                <textarea id="reply-input" maxlength="400" placeholder="Tell me what makes your heart calm…"></textarea>
+                <div class="char-counter">0/400</div>
+                <button id="send-reply-btn">Send Your Hug 🧸</button>
+            </div>
+
+            <div id="saved-reply-container" class="hidden">
+                <p class="saved-msg-content"></p>
+                <span class="saved-time"></span>
+                <p class="confirmation-text">Your words are safe with me.</p>
+            </div>
+        </section>
+
+        <!-- Section 7.5: Photo Booth -->
+        <section id="photobooth-section" class="content-section">
+            <h2>Capture This Moment 📸</h2>
+            <p class="subtext">Let's save this Teddy Day memory together</p>
+
+            <div class="photobooth-container">
+                <button id="start-camera-btn" class="action-btn">Start Camera 🎥</button>
+
+                <div id="camera-preview-container" class="hidden">
+                    <div class="camera-frame">
+                        <video id="camera-stream" autoplay playsinline></video>
+                        <div id="countdown-overlay" class="countdown-overlay hidden"></div>
+                        <div id="flash-overlay" class="flash-overlay"></div>
+                    </div>
+                </div>
+
+                <button id="capture-btn" class="action-btn hidden">Capture Our Memory 🧸</button>
+
+                <div id="result-container" class="result-container hidden">
+                    <img id="photo-strip-output" alt="Photo Strip">
+                    <div class="result-actions">
+                        <button id="retake-btn" class="action-btn">Retake 🔄</button>
+                        <button id="save-btn" class="action-btn">Save Forever 💾</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Soft Ending -->
+        <section id="footer-section" class="screen-section">
+            <h2 class="fade-in-scroll">You’re never alone.<br>Not while I’m here.</h2>
+        </section>
+
+    </main>
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Teddy Day Script -->
+    <script src="script.js"></script>
+    <!-- Photo Booth Script -->
+    <script src="../photobooth.js"></script>
+</body>
+
+</html>
