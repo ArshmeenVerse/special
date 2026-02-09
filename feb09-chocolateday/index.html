@@ -32,14 +32,24 @@
     <div class="bg-gradient"></div>
     <div class="cocoa-dust" aria-hidden="true"></div>
 
+    <!-- Music Play Popup -->
+    <div id="music-popup" class="music-popup">
+        <div class="popup-content">
+            <div class="popup-icon">🎵</div>
+            <h2 class="popup-title">Play Music?</h2>
+            <p class="popup-subtitle">Experience this sweetness with sound</p>
+            <button id="play-music-btn" class="popup-btn">Yes, Play Music 🍫</button>
+        </div>
+    </div>
+
     <!-- Music Control -->
     <div class="music-control">
         <button id="music-toggle" aria-label="Toggle Music">
-            <i class="fas fa-volume-up"></i>
+            <i class="fas fa-volume-mute"></i>
         </button>
     </div>
     <audio id="bg-music" loop>
-        <source src="../assets/music/chocolate_theme.mp3" type="audio/mpeg">
+        <source src="chocolate_bg_music.mp3" type="audio/mpeg">
     </audio>
 
     <!-- SECTION 1: HERO INTRO -->
@@ -130,24 +140,24 @@
         <div class="polaroid-gallery">
             <div class="polaroid-card p1">
                 <div class="photo-frame">
-                    <img src="../assets/images/mem1.jpg" alt="Sweet Moment 1"
+                    <img src="mem1.jpg" alt="Sweet Moment 1"
                         onerror="this.src='https://placehold.co/300x400/3e2723/d4af37?text=Sweet+Moment'">
                 </div>
-                <p class="handwritten">Coffee dates ☕</p>
+                <p class="handwritten">Mountain moments 🏔️</p>
             </div>
             <div class="polaroid-card p2">
                 <div class="photo-frame">
-                    <img src="../assets/images/mem2.jpg" alt="Sweet Moment 2"
+                    <img src="mem2.jpg" alt="Sweet Moment 2"
                         onerror="this.src='https://placehold.co/300x400/3e2723/d4af37?text=Us'">
                 </div>
-                <p class="handwritten">Just us ❤️</p>
+                <p class="handwritten">Sunset dreams 🌅</p>
             </div>
             <div class="polaroid-card p3">
                 <div class="photo-frame">
-                    <img src="../assets/images/mem3.jpg" alt="Sweet Moment 3"
+                    <img src="mem3.jpg" alt="Sweet Moment 3"
                         onerror="this.src='https://placehold.co/300x400/3e2723/d4af37?text=Travel'">
                 </div>
-                <p class="handwritten">Adventures 🌍</p>
+                <p class="handwritten">Together always ❤️</p>
             </div>
         </div>
     </section>
@@ -166,7 +176,7 @@
                 <span class="time-stamp">0:00</span>
             </div>
             <audio id="voice-msg-audio">
-                <source src="../assets/audio/voice_message_chocolate.mp3" type="audio/mpeg">
+                <source src="voice_message_chocolate.mp3" type="audio/mpeg">
                 <!-- Fallback if audio missing -->
             </audio>
             <p id="voice-subtext" class="subtext">Wish I could feed you one right now.</p>

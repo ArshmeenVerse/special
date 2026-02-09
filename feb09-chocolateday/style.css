@@ -57,6 +57,131 @@ body {
     }
 }
 
+/* === MUSIC POPUP === */
+.music-popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease;
+}
+
+.music-popup.hidden {
+    display: none;
+}
+
+.popup-content {
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: 25px;
+    padding: 3rem 2.5rem;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: popupSlide 0.5s ease;
+}
+
+@keyframes popupSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.popup-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.popup-title {
+    font-family: var(--font-fancy);
+    font-size: 2rem;
+    color: var(--caramel);
+    margin-bottom: 0.5rem;
+}
+
+.popup-subtitle {
+    color: var(--text-main);
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.popup-btn {
+    padding: 15px 35px;
+    background: var(--caramel);
+    color: #3e2723;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
+    font-family: var(--font-body);
+}
+
+.popup-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
+}
+
+.popup-btn:active {
+    transform: scale(0.98);
+}
+
+/* === MUSIC CONTROL === */
+.music-control {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+#music-toggle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--caramel);
+    background: var(--glass-bg);
+    color: var(--caramel);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+#music-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+
 /* === UTILITIES === */
 .hidden {
     display: none !important;

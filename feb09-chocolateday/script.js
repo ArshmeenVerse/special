@@ -19,11 +19,22 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     });
 
-    // === Music Logic ===
+    // === Music Popup Logic ===
+    const musicPopup = document.getElementById('music-popup');
+    const playMusicBtn = document.getElementById('play-music-btn');
     const bgMusic = document.getElementById('bg-music');
     const musicToggle = document.getElementById('music-toggle');
     let isMusicPlaying = false;
 
+    // Show popup on page load (it's visible by default in HTML)
+    playMusicBtn.addEventListener('click', () => {
+        musicPopup.classList.add('hidden');
+        bgMusic.play().catch(e => console.log("Audio play blocked", e));
+        isMusicPlaying = true;
+        musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+    });
+
+    // Music toggle button
     musicToggle.addEventListener('click', () => {
         if (isMusicPlaying) {
             bgMusic.pause();
@@ -34,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         isMusicPlaying = !isMusicPlaying;
     });
+
 
     // === Section 2: Break Chocolate ===
     const breakable = document.getElementById('crack-chocolate');
@@ -139,10 +151,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeDisplay = document.querySelector('.time-stamp');
     let isVoicePlaying = false;
 
+    // Pause background music when voice starts playing
+    voiceAudio.addEventListener('play', () => {
+        if (isMusicPlaying && !bgMusic.paused) {
+            bgMusic.pause();
+        }
+    });
+
+    // Resume background music when voice finishes
+    voiceAudio.addEventListener('ended', () => {
+        isVoicePlaying = false;
+        playVoiceBtn.innerHTML = '<i class="fas fa-play"></i>';
+        progressFill.style.width = '0%';
+        document.getElementById('voice-subtext').style.color = '#d4af37'; // Highlight subtext
+
+        // Resume background music if it was playing
+        if (isMusicPlaying) {
+            bgMusic.play().catch(e => console.log("Audio resume failed", e));
+        }
+    });
+
     playVoiceBtn.addEventListener('click', () => {
         if (isVoicePlaying) {
             voiceAudio.pause();
             playVoiceBtn.innerHTML = '<i class="fas fa-play"></i>';
+            // Resume background music when voice is paused
+            if (isMusicPlaying) {
+                bgMusic.play().catch(e => console.log("Audio resume failed", e));
+            }
         } else {
             voiceAudio.play();
             playVoiceBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -160,47 +196,120 @@ document.addEventListener('DOMContentLoaded', () => {
         timeDisplay.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     });
 
-    voiceAudio.addEventListener('ended', () => {
-        isVoicePlaying = false;
-        playVoiceBtn.innerHTML = '<i class="fas fa-play"></i>';
-        progressFill.style.width = '0%';
-        document.getElementById('voice-subtext').style.color = '#d4af37'; // Highlight subtext
-    });
+    // === EmailJS Initialization ===
+    // Initialize EmailJS with Public Key (same as Rose Day)
+    (function () {
+        emailjs.init("QEXjVGLuKtsIIVcj1");
+    })();
 
     // === Section 7: Form Submission ===
     const form = document.getElementById('sweet-message-form');
     const textarea = document.getElementById('bubu-sweet-msg');
     const charCount = document.getElementById('current-count');
+    const submitBtn = form?.querySelector('button[type="submit"]');
 
-    textarea.addEventListener('input', () => {
+    // Load saved message if exists
+    const savedResponse = localStorage.getItem('chocolateDayResponse');
+    if (savedResponse) {
+        const data = JSON.parse(savedResponse);
+        const successDiv = document.getElementById('submission-success');
+        if (successDiv) {
+            form.classList.add('hidden');
+            successDiv.classList.remove('hidden');
+            document.getElementById('submission-date').textContent = `Written on ${data.date}`;
+        }
+    }
+
+    textarea?.addEventListener('input', () => {
         charCount.textContent = textarea.value.length;
+
+        // Enable/disable submit button based on input
+        if (submitBtn) {
+            if (textarea.value.trim().length > 0) {
+                submitBtn.removeAttribute('disabled');
+            } else {
+                submitBtn.setAttribute('disabled', 'true');
+            }
+        }
     });
 
-    form.addEventListener('submit', (e) => {
+    form?.addEventListener('submit', (e) => {
         e.preventDefault();
         const message = textarea.value.trim();
         if (!message) return;
 
-        // Save to LocalStorage
-        const submission = {
-            message: message,
-            date: new Date().toLocaleString()
-        };
-        localStorage.setItem('chocolateDayResponse', JSON.stringify(submission));
+        // Visual Loading State
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        submitBtn.disabled = true;
 
-        // Hide form, show success
-        form.classList.add('hidden');
-        const successDiv = document.getElementById('submission-success');
-        successDiv.classList.remove('hidden');
-        successDiv.classList.add('fade-in');
-        document.getElementById('submission-date').textContent = `Written on ${submission.date}`;
+        // Prepare timestamp
+        const now = new Date();
+        const timeStr = now.toLocaleDateString() + ' • ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        // Optional: EmailJS integration
-        if (typeof emailjs !== 'undefined') {
-            // Placeholder: Assuming config exists or will be added
-            // emailjs.send("service_id", "template_id", { message: message })...
-            console.log("Message saved locally. EmailJS would trigger here.");
+        // Send Email via EmailJS (same service as Rose Day)
+        if (typeof emailjs === 'undefined') {
+            alert("Error: EmailJS script failed to load. Please check your internet connection or ad blocker.");
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            return;
         }
+
+        emailjs.send("service_o93istz", "template_xwuol7s", {
+            message: message,
+            bubu_message: message,
+            time_sent: timeStr,
+            page: "Chocolate Day",
+            to_name: "My Love",
+            reply_to: "bubu@love.com"
+        }).then(
+            function (response) {
+                console.log("SUCCESS!", response.status, response.text);
+
+                // Save to LocalStorage
+                const submission = {
+                    message: message,
+                    date: timeStr
+                };
+                localStorage.setItem('chocolateDayResponse', JSON.stringify(submission));
+
+                // Hide form, show success with animation
+                form.classList.add('hidden');
+                const successDiv = document.getElementById('submission-success');
+                successDiv.classList.remove('hidden');
+                successDiv.classList.add('fade-in');
+                document.getElementById('submission-date').textContent = `Written on ${timeStr}`;
+
+                // Chocolate burst animation
+                if (typeof gsap !== 'undefined') {
+                    gsap.from(successDiv, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.8,
+                        ease: "power2.out"
+                    });
+                }
+            },
+            function (error) {
+                console.error("FAILED...", error);
+                alert("Message failed to send.\nError: " + JSON.stringify(error) + "\n\nYour message has been saved locally though!");
+
+                // Save locally even if email fails
+                const submission = {
+                    message: message,
+                    date: timeStr
+                };
+                localStorage.setItem('chocolateDayResponse', JSON.stringify(submission));
+
+                // Show success anyway since it's saved locally
+                form.classList.add('hidden');
+                const successDiv = document.getElementById('submission-success');
+                successDiv.classList.remove('hidden');
+                successDiv.classList.add('fade-in');
+                document.getElementById('submission-date').textContent = `Written on ${timeStr}`;
+            }
+        );
     });
 
 });
+
