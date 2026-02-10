@@ -131,19 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
         charCounter.textContent = `${len}/400`;
     });
 
-    sendReplyBtn.addEventListener('click', () => {
-        const text = replyInput.value.trim();
-        if (text) {
-            const now = new Date();
-            const timeString = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-
-            const data = { text: text, time: timeString };
-            localStorage.setItem('teddyDayResponse', JSON.stringify(data));
-
-            showSavedReply(text, timeString);
-        }
-    });
-
     function showSavedReply(text, time) {
         document.querySelector('.reply-card').style.display = 'none'; // Hide input
         savedReplyContainer.classList.remove('hidden');
@@ -152,8 +139,90 @@ document.addEventListener('DOMContentLoaded', () => {
         savedTime.textContent = time;
     }
 
+    // === BACKGROUND MUSIC SYSTEM ===
+    const musicBtn = document.getElementById('music-toggle');
+    const bgAudio = document.getElementById('bg-music');
+    let musicPlaying = false;
+    let hasInteracted = false;
+    const overlay = document.getElementById('start-overlay');
+    const startBtn = document.getElementById('start-btn');
 
-    // --- 6. Voice Message Player ---
+    // Start experience with music
+    const startExperience = () => {
+        if (!hasInteracted && bgAudio) {
+            if (startBtn) startBtn.style.transform = 'scale(0.9)';
+
+            setTimeout(() => {
+                bgAudio.volume = 0.7;
+                bgAudio.play().catch(e => {
+                    console.error("Audio play blocked", e);
+                    alert("⚠️ Audio Playback Failed. Please click the music icon in the top right corner.");
+                });
+                musicBtn.innerHTML = '<i class=\"fas fa-volume-up\"></i>';
+                musicPlaying = true;
+                hasInteracted = true;
+
+                // Hide Overlay
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.style.display = 'none', 800);
+                }
+            }, 200);
+        }
+    };
+
+    if (startBtn) {
+        startBtn.addEventListener('click', startExperience);
+    }
+
+    // Music toggle button
+    musicBtn?.addEventListener('click', () => {
+        if (musicPlaying) {
+            bgAudio.pause();
+            musicBtn.innerHTML = '<i class=\"fas fa-music\"></i>';
+        } else {
+            bgAudio.play().catch(e => console.log('Audio play failed:', e));
+            musicBtn.innerHTML = '<i class=\"fas fa-volume-up\"></i>';
+        }
+        musicPlaying = !musicPlaying;
+    });
+
+    // === VIDEO PLAYER ===
+    const teddyVideo = document.getElementById('teddy-video');
+    const videoPlayBtn = document.getElementById('video-play-btn');
+
+    videoPlayBtn?.addEventListener('click', () => {
+        if (teddyVideo.paused) {
+            teddyVideo.play();
+            videoPlayBtn.style.opacity = '0';
+            videoPlayBtn.style.pointerEvents = 'none';
+        } else {
+            teddyVideo.pause();
+            videoPlayBtn.style.opacity = '1';
+            videoPlayBtn.style.pointerEvents = 'auto';
+        }
+    });
+
+    // Show play button when video is paused/ended
+    teddyVideo?.addEventListener('pause', () => {
+        videoPlayBtn.style.opacity = '1';
+        videoPlayBtn.style.pointerEvents = 'auto';
+        videoPlayBtn.innerHTML = '<i class=\"fas fa-play\"></i>';
+    });
+
+    teddyVideo?.addEventListener('play', () => {
+        videoPlayBtn.style.opacity = '0';
+        videoPlayBtn.style.pointerEvents = 'none';
+    });
+
+    teddyVideo?.addEventListener('ended', () => {
+        videoPlayBtn.style.opacity = '1';
+        videoPlayBtn.style.pointerEvents = 'auto';
+        videoPlayBtn.innerHTML = '<i class=\"fas fa-play\"></i>';
+    });
+
+
+    // --- 6. Voice Message Player (with background music pause/resume) ---
     const voiceAudio = document.getElementById('voice-msg');
     const playBtn = document.getElementById('play-pause-btn');
     const progressBar = document.getElementById('audio-progress');
@@ -163,13 +232,19 @@ document.addEventListener('DOMContentLoaded', () => {
     playBtn.addEventListener('click', () => {
         if (isPlaying) {
             voiceAudio.pause();
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            playBtn.innerHTML = '<i class=\"fas fa-play\"></i>';
         } else {
+            // Pause background music when voice starts
+            if (musicPlaying && bgAudio) {
+                bgAudio.pause();
+                musicBtn.innerHTML = '<i class=\"fas fa-music\"></i>';
+            }
+
             voiceAudio.play();
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            playBtn.innerHTML = '<i class=\"fas fa-pause\"></i>';
             // Ambient effect
             document.body.style.backgroundColor = '#FAD4C0'; // Warm peach dim
-            setTimeout(() => document.body.style.backgroundColor = '', voiceAudio.duration * 1000); // Reset after play (simple version)
+            setTimeout(() => document.body.style.backgroundColor = '', voiceAudio.duration * 1000);
         }
         isPlaying = !isPlaying;
     });
@@ -183,16 +258,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
     voiceAudio.addEventListener('ended', () => {
         isPlaying = false;
-        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        playBtn.innerHTML = '<i class=\"fas fa-play\"></i>';
         progressBar.style.width = '0%';
 
         // Show end message
         voiceEndMsg.classList.remove('hidden-message');
         voiceEndMsg.classList.add('fade-in');
 
-        // Reset background if needed
+        // Reset background
         document.body.style.backgroundColor = '';
+
+        // Resume background music after voice ends
+        if (bgAudio && hasInteracted) {
+            bgAudio.play().catch(e => console.log('Resume bg music failed:', e));
+            musicBtn.innerHTML = '<i class=\"fas fa-volume-up\"></i>';
+            musicPlaying = true;
+        }
     });
+
+    // === EMAILJS CONFIGURATION (same as Rose Day) ===
+    // Initialize EmailJS with Public Key
+    (function () {
+        emailjs.init("QEXjVGLuKtsIIVcj1");
+    })();
+
+    // Update sendReplyBtn to use EmailJS
+    sendReplyBtn.addEventListener('click', () => {
+        const text = replyInput.value.trim();
+        if (!text) return;
+
+        // Visual Loading State
+        const originalBtnText = sendReplyBtn.innerHTML;
+        sendReplyBtn.innerHTML = '<i class=\"fas fa-spinner fa-spin\"></i> Sending...';
+        sendReplyBtn.disabled = true;
+
+        const now = new Date();
+        const timeString = now.toLocaleDateString() + ' • ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        // Send Email via EmailJS
+        if (typeof emailjs === 'undefined') {
+            alert("Error: EmailJS script failed to load. Please check your internet connection.");
+            sendReplyBtn.innerHTML = originalBtnText;
+            sendReplyBtn.disabled = false;
+            return;
+        }
+
+        emailjs.send("service_o93istz", "template_xwuol7s", {
+            message: text,
+            bubu_message: text,
+            time_sent: timeString,
+            to_name: "My Love",
+            reply_to: "bubu@love.com",
+            day: "Teddy Day"
+        }).then(
+            function (response) {
+                console.log("SUCCESS!", response.status, response.text);
+
+                // Store Locally
+                const data = { text: text, time: timeString };
+                localStorage.setItem('teddyDayResponse', JSON.stringify(data));
+
+                showSavedReply(text, timeString);
+            },
+            function (error) {
+                console.error("FAILED...", error);
+                alert("Email failed to send.\\nError: " + JSON.stringify(error));
+                sendReplyBtn.innerHTML = originalBtnText;
+                sendReplyBtn.disabled = false;
+            }
+        );
+    });
+
 
 
     // --- 7. Scroll Reveal Animation ---

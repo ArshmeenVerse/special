@@ -15,11 +15,42 @@
         rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <!-- Tenor Embed Script -->
     <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
 </head>
 
 <body>
+
+    <!-- Background Music Control -->
+    <div class="music-control" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+        <button id="music-toggle" class="icon-btn" aria-label="Toggle background music"
+            style="background: rgba(141, 110, 99, 0.8); border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; color: white; font-size: 1.2rem; backdrop-filter: blur(10px);">
+            <i class="fas fa-music"></i>
+        </button>
+        <audio id="bg-music" loop preload="auto">
+            <source src="assets/background_music_new.mp4" type="audio/mp4">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <!-- Overlay for Music Play Popup -->
+    <div id="start-overlay" class="overlay"
+        style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.8s ease;">
+        <div class="music-popup"
+            style="text-align: center; padding: 3rem; background: linear-gradient(135deg, #FAD4C0 0%, #F5C6B8 100%); border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            <h2 class="popup-title"
+                style="font-family: 'Quicksand', sans-serif; font-size: 2rem; color: #8D6E63; margin-bottom: 1rem;">
+                Start the Magic? ✨</h2>
+            <p class="popup-subtitle" style="font-family: 'Nunito', sans-serif; color: #8D6E63; margin-bottom: 2rem;">
+                Turn up the volume for the best experience</p>
+            <button id="start-btn" class="play-start-btn"
+                style="background: #8D6E63; color: white; border: none; border-radius: 50%; width: 80px; height: 80px; font-size: 2rem; cursor: pointer; transition: transform 0.3s ease;">
+                <i class="fas fa-play"></i>
+            </button>
+        </div>
+    </div>
 
     <!-- Background Elements -->
     <div id="ambient-glow"></div>
@@ -118,6 +149,22 @@
                 <div class="typewriter-text" id="letter-content">
                     <!-- Text will be typed here via JS -->
                 </div>
+            </div>
+        </section>
+
+        <!-- Section 5.5: Video Message -->
+        <section id="video-section" class="content-section">
+            <h2>A special moment for you, Bubu 🧸</h2>
+            <div
+                style="position: relative; max-width: 600px; margin: 2rem auto; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(141, 110, 99, 0.3);">
+                <video id="teddy-video" style="width: 100%; height: auto; display: block;" playsinline muted>
+                    <source src="assets/teddy_video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <button id="video-play-btn"
+                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(141, 110, 99, 0.9); color: white; border: none; border-radius: 50%; width: 70px; height: 70px; font-size: 2rem; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease;">
+                    <i class="fas fa-play"></i>
+                </button>
             </div>
         </section>
 
