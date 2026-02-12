@@ -143,6 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '../feb10-teddyday/index.html';
         } else if (title === 'Promise Day') {
             window.location.href = '../feb11-promiseday/index.html';
+        } else if (title === 'Hug Day') {
+            window.location.href = '../feb12-hugday/index.html';
         } else {
             alert(`Opening content for: ${title} (Next Step: Create these pages!)`);
         }
