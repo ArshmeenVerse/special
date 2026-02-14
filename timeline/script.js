@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { date: '2026-02-11', title: 'Promise Day', icon: '🤞', desc: 'My vows to you...', theme: 'theme-promise' },
         { date: '2026-02-12', title: 'Hug Day', icon: '🤗', desc: 'Hold me tight...', theme: 'theme-hug' },
         { date: '2026-02-13', title: 'Kiss Day', icon: '💋', desc: 'Sealed with love...', theme: 'theme-kiss' },
-        { date: '2026-02-14', title: 'Valentine’s Day', icon: '❤️', desc: 'The big day!', theme: 'theme-valentine' }
+        { date: '2026-02-14', title: "Valentine's Day", icon: '❤️', desc: 'The big day!', theme: 'theme-valentine' }
     ];
 
     const container = document.getElementById('timeline-container');
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="main-icon">${day.icon}</div>
                     <h1 class="day-title">${day.title}</h1>
                     <p class="day-status">${day.desc}</p>
-                    <button class="action-btn" onclick="openContent('${day.title}')">
+                    <button class="action-btn" onclick="openContent(&quot;${day.title}&quot;)">
                         ${isToday ? "Enter Today's Love 💖" : "Revisit Memory"}
                     </button>
                 </div>
@@ -147,6 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '../feb12-hugday/index.html';
         } else if (title === 'Kiss Day') {
             window.location.href = '../feb13-kissday/index.html';
+        } else if (title === "Valentine's Day") {
+            window.location.href = '../feb14-valentinesday/index.html';
         } else {
             alert(`Opening content for: ${title} (Next Step: Create these pages!)`);
         }
