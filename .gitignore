@@ -6,3 +6,7 @@ Thumbs.db
 *.log
 dist/
 build/
+
+# Large video files (hosted on Google Drive instead)
+**/candid_2.mp4
+**/just_us.mp4

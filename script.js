@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
     const SECRET_PASSWORD = 'love'; // Simple default password
-    const REDIRECT_URL = 'timeline/index.html'; // Explicit for local file protocol
+    const REDIRECT_URL = 'feb14-valentinesday/index.html'; // Redirect to Valentine's Day page
 
     // --- Elements ---
     const passwordInput = document.getElementById('password-input');

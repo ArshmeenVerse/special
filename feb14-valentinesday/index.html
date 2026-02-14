@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- EmailJS & Icons -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ------------------------------------------------------------------
+           DESIGN SYSTEM & VARIABLES
+           ------------------------------------------------------------------ */
+        :root {
+            /* Palette */
+            --obsidian: #0B0B0D;
+            --charcoal: #141417;
+            --warm-ink: #1A1412;
+            --sepia-dark: #1F1712;
+
+            /* Accents */
+            --antique-gold: #C9A84C;
+            --champagne: #E5D3A1;
+            --deep-burgundy: #5C1A2E;
+            --velvet-plum: #3A1F2B;
+            --burnt-rose: #A35C6A;
+            --rose-gold: #D8A7A7;
+
+            /* Spacing */
+            --spacing-section: 120px;
+            --spacing-content: 40px;
+
+            /* Transitions */
+            --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        /* Reset & Base */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--obsidian);
+            color: var(--champagne);
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+            opacity: 0;
+            /* JS fade in */
+            transition: opacity 1s ease;
+            cursor: none;
+            /* Custom cursor */
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .font-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .font-sans {
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        /* Clamp Typography */
+        .text-hero {
+            font-size: clamp(3rem, 8vw, 6rem);
+        }
+
+        .text-title {
+            font-size: clamp(2rem, 5vw, 4rem);
+        }
+
+        .text-subtitle {
+            font-size: clamp(1.2rem, 2.5vw, 2rem);
+        }
+
+        .text-body {
+            font-size: clamp(1rem, 1.2vw, 1.25rem);
+            line-height: 1.6;
+        }
+
+        .text-small {
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: var(--antique-gold);
+            line-height: 1.4;
+        }
+
+        /* ------------------------------------------------------------------
+           AESTHETICS (Grain, Cursor, Particles)
+           ------------------------------------------------------------------ */
+
+        /* Grain Overlay */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background-color: var(--rose-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--rose-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s;
+            opacity: 0.5;
+            box-shadow: 0 0 15px rgba(216, 167, 167, 0.2);
+        }
+
+        @media (hover: none) {
+
+            .cursor-dot,
+            .cursor-glow {
+                display: none;
+            }
+
+            body {
+                cursor: auto;
+            }
+        }
+
+        /* Dust Particles */
+        .particle {
+            position: fixed;
+            background: var(--champagne);
+            border-radius: 50%;
+            opacity: 0.3;
+            pointer-events: none;
+            animation: float 20s infinite linear;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        /* ------------------------------------------------------------------
+           LAYOUT & SECTIONS
+           ------------------------------------------------------------------ */
+        .act {
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            padding: var(--spacing-section) 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .container-narrow {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .container-wide {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ------------------------------------------------------------------
+           COMPONENTS
+           ------------------------------------------------------------------ */
+
+        /* Audio Button */
+        .audio-control {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 1001;
+            background: none;
+            border: none;
+            color: var(--antique-gold);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0;
+            transition: color 0.3s;
+        }
+
+        .audio-control:hover {
+            color: var(--rose-gold);
+        }
+
+        /* Act I */
+        #act-1 {
+            background: radial-gradient(circle at center, #1a1a20 0%, var(--obsidian) 70%);
+            text-align: center;
+        }
+
+        .name-char {
+            display: inline-block;
+            opacity: 0;
+        }
+
+        .gold-rule {
+            width: 0%;
+            height: 1px;
+            background: var(--antique-gold);
+            margin: 20px auto;
+            opacity: 0.5;
+        }
+
+        /* Act II */
+        #act-2 {
+            background-color: var(--charcoal);
+            align-items: flex-start;
+        }
+
+        .text-block {
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Act III */
+        #act-3 {
+            background-color: var(--charcoal);
+            /* Will transition to darker/lighter via JS potentially, or stay dark */
+            padding-left: 0;
+            padding-right: 0;
+            overflow: hidden;
+            display: block;
+        }
+
+        .travel-video-container {
+            width: 100%;
+            height: 80vh;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 100px;
+        }
+
+        .travel-video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1);
+            /* Animated later */
+        }
+
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, var(--obsidian), transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+        }
+
+        .photo-strip {
+            display: flex;
+            gap: 40px;
+            padding: 0 5vw;
+            width: max-content;
+            /* Horizontal scroll trigger */
+            margin-bottom: 150px;
+        }
+
+        .photo-card {
+            width: 30vw;
+            height: 40vw;
+            max-width: 400px;
+            max-height: 600px;
+            background-color: #222;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            filter: grayscale(0.4) sepia(0.2);
+            transition: transform 0.3s, filter 0.3s;
+        }
+
+        .photo-card:hover {
+            transform: scale(1.02);
+            filter: grayscale(0) sepia(0);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .romantic-video-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            padding-bottom: 100px;
+        }
+
+        .romantic-video-frame {
+            border: 1px solid var(--antique-gold);
+            padding: 10px;
+            box-shadow: 0 0 30px rgba(201, 168, 76, 0.1);
+        }
+
+        .romantic-video-frame video {
+            width: 100%;
+            display: block;
+        }
+
+        /* Act IV */
+        #act-4 {
+            background-color: var(--warm-ink);
+        }
+
+        .promise-letter {
+            background: #fffdf5;
+            color: #2c2c2c;
+            padding: 60px 80px;
+            max-width: 700px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transform: rotate(-1deg);
+            margin-top: 50px;
+            opacity: 0;
+        }
+
+        .promise-letter::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            box-shadow: inset 0 0 60px rgba(189, 155, 105, 0.2);
+            pointer-events: none;
+        }
+
+        .wax-seal {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: var(--deep-burgundy);
+            border-radius: 50%;
+            box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 2rem;
+            font-weight: bold;
+            transform: scale(0);
+            /* Animate in */
+        }
+
+        /* Act V */
+        #act-5 {
+            background-color: var(--sepia-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .punjabi-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30vw;
+            color: var(--antique-gold);
+            opacity: 0.04;
+            pointer-events: none;
+            white-space: nowrap;
+            font-family: serif;
+            /* Fallback for Gurmukhi if needed */
+            z-index: 0;
+        }
+
+        .together-video-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            margin: 50px auto;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-family: 'Cormorant Garamond';
+            font-size: 1.5rem;
+            letter-spacing: 0.1em;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .punjabi-card {
+            border-left: 2px solid var(--antique-gold);
+            padding-left: 30px;
+            margin-top: 100px;
+            max-width: 600px;
+        }
+
+        /* Final Section */
+        #final-act {
+            background-color: #000;
+            text-align: center;
+        }
+
+        .delayed-line {
+            opacity: 0;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            :root {
+                --spacing-section: 80px;
+            }
+
+            .photo-card {
+                width: 70vw;
+                height: 100vw;
+            }
+
+            .promise-letter {
+                padding: 40px 30px;
+                transform: rotate(0);
+            }
+
+            body {
+                cursor: auto;
+            }
+        }
+
+        /* ------------------------------------------------------------------
+           NEW FEATURE STYLES
+           ------------------------------------------------------------------ */
+
+        /* Relationship Counter */
+        .relationship-counter {
+            text-align: center;
+            padding: 100px 0;
+            opacity: 0;
+            /* Animate in */
+        }
+
+        .counter-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .counter-number {
+            display: block;
+            font-size: clamp(3rem, 5vw, 5rem);
+            color: var(--champagne);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .counter-label {
+            color: rgba(229, 211, 161, 0.6);
+        }
+
+        /* Memory Lock */
+        .memory-lock-section {
+            background-color: #0B0B0D;
+            /* Darker transition */
+            padding: 150px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+            border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .lock-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--antique-gold);
+            color: var(--champagne);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 2rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .lock-input:focus {
+            border-bottom-color: var(--rose-gold);
+        }
+
+        .hidden-memory-container {
+            margin-top: 50px;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            display: none;
+            /* JS Toggle */
+            opacity: 0;
+            border: 1px solid var(--antique-gold);
+            padding: 10px;
+            box-shadow: 0 0 30px rgba(201, 168, 76, 0.15);
+        }
+
+        .hidden-memory-container img {
+            width: 100%;
+            display: block;
+            filter: sepia(0.3);
+        }
+
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        /* Time Capsule */
+        .time-capsule-trigger {
+            text-align: center;
+            margin: 80px 0;
+        }
+
+        .capsule-btn {
+            background: transparent;
+            border: 1px solid var(--antique-gold);
+            color: var(--antique-gold);
+            padding: 15px 40px;
+            font-family: 'DM Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .capsule-btn:hover {
+            background: var(--antique-gold);
+            color: var(--obsidian);
+        }
+
+        .capsule-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 11, 13, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .capsule-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            border: 1px solid var(--antique-gold);
+            padding: 60px;
+            max-width: 500px;
+            text-align: center;
+            background: var(--obsidian);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--antique-gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .future-content {
+            display: none;
+            /* Hidden by default */
+            opacity: 0;
+            margin-top: 50px;
+            padding: 40px;
+            border: 1px solid rgba(229, 211, 161, 0.1);
+        }
+
+        /* ------------------------------------------------------------------
+           PHOTO BOOTH STYLES
+           ------------------------------------------------------------------ */
+        .photobooth-section {
+            background-color: var(--obsidian);
+            padding: var(--spacing-section) 5%;
+            text-align: center;
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .camera-container {
+            position: relative;
+            max-width: 800px;
+            margin: 40px auto;
+            background: #000;
+            border: 1px solid var(--antique-gold);
+            padding: 10px;
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.1);
+        }
+
+        .preview-box {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 75%;
+            /* 4:3 Aspect Ratio */
+            background: #111;
+            overflow: hidden;
+        }
+
+        #camera-stream {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            /* Mirror effect */
+        }
+
+        .camera-btn {
+            background: transparent;
+            border: 1px solid var(--antique-gold);
+            color: var(--antique-gold);
+            padding: 15px 30px;
+            font-family: 'DM Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .camera-btn:hover {
+            background: var(--antique-gold);
+            color: var(--obsidian);
+        }
+
+        .overlay-count {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .overlay-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .overlay-flash.active {
+            animation: flashAnim 0.2s ease-out;
+        }
+
+        @keyframes flashAnim {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .camera-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .pulse-btn {
+            background: var(--deep-burgundy);
+            color: #fff;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 0 0 0 rgba(92, 26, 46, 0.7);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(92, 26, 46, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(92, 26, 46, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(92, 26, 46, 0);
+            }
+        }
+
+        .result-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .photo-strip {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ------------------------------------------------------------------
+           LETTER WRITING STYLES
+           ------------------------------------------------------------------ */
+        .writes-back-section {
+            padding: var(--spacing-section) 5%;
+            background-color: var(--warm-ink);
+            text-align: center;
+        }
+
+        .message-card {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fffdf5;
+            color: #1a1a1a;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .message-card::before {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border: 1px solid var(--antique-gold);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            margin-bottom: 20px;
+            background-image: linear-gradient(transparent, transparent 31px, #eee 31px, #eee 32px);
+            background-size: 100% 32px;
+            padding: 8px;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .send-btn {
+            background: var(--deep-burgundy);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-family: 'DM Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #3a1f2b;
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .saved-message-content {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #2c2c2c;
+            position: relative;
+            padding: 20px;
+        }
+
+        .message-timestamp {
+            display: block;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #888;
+            font-family: 'DM Sans', sans-serif;
+            text-transform: uppercase;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Aesthetics -->
+    <div class="grain-overlay"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-glow"></div>
+    <!-- Particles injected via JS -->
+    <!-- Audio Control --><button class="audio-control" id="muteBtn">Sound On</button><audio id="bgMusic" loop>
+        <source src="assets/love_me_like_you_do.mp3" type="audio/mpeg">
+    </audio>
+    <!-- ACT I: INTENTIONAL BEGINNING -->
+    <section class="act" id="act-1">
+        <div class="container-narrow">
+            <p class="text-small" style="color: var(--antique-gold); margin-bottom: 2rem;">Introduction
+            </p>
+            <h1 class="text-hero"><span class="name-char">M</span><span class="name-char">y</span><span
+                    class="name-char">&nbsp;
+                </span><span class="name-char">D</span><span class="name-char">e</span><span
+                    class="name-char">a</span><span class="name-char">r</span><span class="name-char">e</span><span
+                    class="name-char">s</span><span class="name-char">t</span></h1>
+            <div class="gold-rule"></div>
+            <p class="text-subtitle font-serif italic" style="opacity: 0; margin-top: 2rem;" id="intro-subtitle">A
+                moment of stillness,
+                just for you. </p>
+            <p class="text-small" style="opacity: 0.5; margin-top: 50px; font-size: 0.7rem;">(Tap
+                anywhere to begin)</p>
+        </div>
+    </section>
+    <!-- ACT II: THE REAL HER -->
+    <section class="act" id="act-2">
+        <div class="container-narrow">
+            <div class="text-block">
+                <h2 class="text-title" style="color: var(--rose-gold); margin-bottom: 1.5rem;">What
+                    Only I Know</h2>
+                <p class="text-body">Most people see the smile you wear for the world. They see the
+                    strength,
+                    the grace,
+                    the way you hold everything together. But I see the quiet moments. I see the
+                    hesitation before you speak your truth,
+                    and the gentle way you recover when the world feels heavy. </p>
+            </div>
+            <div class="text-block">
+                <h2 class="text-title" style="color: var(--champagne); margin-bottom: 1.5rem;">
+                    Through The Storms</h2>
+                <p class="text-body">We've had our arguments. We' ve had silence. But in every
+                    silence,
+                    I found myself respecting you more. You don't just love easily; you love with a
+                    fierce intelligence that challenges me to be better.
+                    That is why I am still here. That is why I am not going anywhere. </p>
+            </div>
+            <div class="text-block">
+                <p class="quote">"You are not just a lover. You are my mirror, my challenge, and my
+                    peace."
+                </p>
+            </div>
+        </div>
+    </section>
+    <!-- < !-- ACT III: VISUAL MEMORY CINEMA -->
+    <section class="act" id="act-3">
+        <!-- < !-- A: Travel Video -->
+        <div class="travel-video-container"><video muted loop playsinline id="travelVideo">
+                <source src="../assets/travel_placeholder.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay">
+                <p class="text-subtitle font-serif">This is where we learned how to exist
+                    together.</p>
+            </div>
+        </div>
+        <!-- < !-- B: Horizontal Photo Strip -->
+        <div class="photo-strip-wrapper" style="width: 100%; overflow: hidden;">
+            <div class="photo-strip" id="photoStrip">
+                <!-- < !-- Add 5 Images -->
+                <div class="photo-card"><img src="assets/memories/1769974920846.png" alt="Memory">
+                </div>
+                <div class="photo-card"><img src="assets/memories/20260119_073030~2.jpg" alt="Memory">
+                </div>
+                <div class="photo-card"><img src="assets/memories/20260119_075307~2.jpg" alt="Memory">
+                </div>
+                <div class="photo-card"><img src="assets/memories/20260117_170917.jpg" alt="Memory">
+                </div>
+                <div class="photo-card"><img src="assets/memories/1769270983488.png" alt="Memory">
+                </div>
+            </div>
+        </div>
+        <!-- < !-- C: Relationship Counter -->
+        <div class="relationship-counter" id="relationshipCounter">
+            <p class="text-small" style="color: var(--antique-gold); letter-spacing: 0.2em; margin-bottom: 2rem;">
+                TIME HAS BEEN KIND TO US</p>
+            <div class="counter-grid">
+                <div class="counter-item"><span class="counter-number serif" id="daysCount">0</span><span
+                        class="counter-label text-small">Days
+                        together</span></div>
+                <div class="counter-item"><span class="counter-number serif" id="monthsCount">0</span><span
+                        class="counter-label text-small">Months
+                        growing</span></div>
+                <div class="counter-item"><span class="counter-number serif">∞</span><span
+                        class="counter-label text-small">Moments we chose each
+                        other</span></div>
+            </div>
+        </div>
+        <!-- < !-- D: Romantic Video -->
+        <div class="romantic-video-wrapper">
+            <p class="text-subtitle italic" style="margin-bottom: 2rem; color: var(--rose-gold);">
+                She
+                doesn’t know I notice this.</p>
+            <div class="video-grid"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
+                <div class="romantic-video-frame"><video controls style="width: 100%; border-radius: 4px;">
+                        <source src="assets/candid_1.mp4" type="video/mp4">
+                    </video></div>
+                <div class="romantic-video-frame">
+                    <iframe src="https://drive.google.com/file/d/15JjDwsz59Lf6aFCTrX_PBgiUIadqUUzp/preview" width="100%"
+                        height="400" frameborder="0" allow="autoplay; fullscreen"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- < !-- MEMORY LOCK (Between Act III and IV) -->
+    <section class="memory-lock-section" id="memoryLock">
+        <div class="container-narrow">
+            <p class="text-subtitle font-serif italic" style="margin-bottom: 2rem;">Before
+                this opens — answer something only we know.</p><input type="text" class="lock-input" id="memoryInput"
+                placeholder="Where did we first laugh uncontrollably?" autocomplete="off">
+            <div class="hidden-memory-container" id="hiddenMemory" style="max-width: 1000px;">
+                <h3 class="text-subtitle" style="text-align: center; color: var(--rose-gold); margin-bottom: 2rem;">
+                    Our Secret Moments</h3>
+                <div class="memory-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                    <img src="images/1769270830277.png" alt="Memory"><img src="images/1769270983488.png"
+                        alt="Memory"><img src="images/1769974920846.png" alt="Memory"><img
+                        src="images/20260117_123840.jpg" alt="Memory"><img src="images/20260117_124422.jpg"
+                        alt="Memory"><img src="images/20260117_125133~2.jpg" alt="Memory"><img
+                        src="images/20260117_170917.jpg" alt="Memory"><img src="images/20260117_170919.jpg"
+                        alt="Memory"><img src="images/20260118_115811.jpg" alt="Memory"><img
+                        src="images/20260118_115826~2.jpg" alt="Memory"><img src="images/20260118_134049.jpg"
+                        alt="Memory"><img src="images/20260118_173951.jpg" alt="Memory"><img
+                        src="images/20260119_073003~2.jpg" alt="Memory"><img src="images/20260119_073025~2.jpg"
+                        alt="Memory"><img src="images/20260119_073030~2.jpg" alt="Memory"><img
+                        src="images/20260119_074411~2.jpg" alt="Memory"><img src="images/20260119_074425~2.jpg"
+                        alt="Memory"><img src="images/20260119_075243~2.jpg" alt="Memory"><img
+                        src="images/20260119_075244.jpg" alt="Memory"><img src="images/20260119_075244~2.jpg"
+                        alt="Memory"><img src="images/20260119_075255~2.jpg" alt="Memory"><img
+                        src="images/20260119_075255~3.jpg" alt="Memory"><img src="images/20260119_075256.jpg"
+                        alt="Memory"><img src="images/20260119_075259~3.jpg" alt="Memory"><img
+                        src="images/20260119_075307~2.jpg" alt="Memory"><img src="images/20260119_075310~2.jpg"
+                        alt="Memory"><img src="images/20260119_075329~2.jpg" alt="Memory"><img
+                        src="images/20260120_122447.jpg" alt="Memory"><img src="images/PXL_20260120_123208047~2.jpg"
+                        alt="Memory">
+                </div>
+                <p class="text-small italic" style="margin-top: 20px; color: var(--rose-gold); text-align: center;">
+                    I
+                    don't forget moments like that.</p>
+            </div>
+        </div>
+    </section>
+    <!-- < !-- ACT IV: THE MAN I'M BECOMING -->
+    <section class="act" id="act-4">
+        <div class="container-narrow">
+            <h2 class="text-title" style="text-align: center; margin-bottom: 4rem;">The
+                Man I Am Becoming</h2>
+            <div class="promise-letter">
+                <p class="text-body" style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;">
+                    My Love,
+                    <br><br>Every day with you is a lesson in patience,
+                    kindness,
+                    and depth. I promise to protect the peace we have built. I promise
+                    to listen not just to reply,
+                    but to understand. <br><br>I am building a life where you never have
+                    to question if you are supported. You are the foundation,
+                    and I am the walls. Together,
+                    we are a fortress. <br><br>Yours,
+                    <br><span style="font-size: 1.8rem; color: var(--deep-burgundy);">Mittul</span>
+                </p>
+                <div class="wax-seal"><span>❤</span></div>
+            </div>
+        </div>
+    </section>
+    <!-- < !-- ACT V: US+FUTURE+CULTURE -->
+    <!-- PHOTO BOOTH -->
+    <section id="photobooth" class="photobooth-section">
+        <div class="container-narrow">
+            <h2 class="text-title" style="color: var(--champagne); margin-bottom: 1rem;">Capture Our
+                Valentine</h2>
+            <p class="text-body" style="opacity: 0.7;">One look, one memory.</p>
+
+            <div class="camera-container">
+                <!-- Start Screen -->
+                <button id="start-camera-btn" class="camera-btn">
+                    <i class="fas fa-camera"></i> Open Camera
+                </button>
+
+                <!-- Live Preview -->
+                <div id="camera-preview-container" class="preview-box hidden">
+                    <video id="camera-stream" autoplay playsinline muted></video>
+                    <div id="countdown-overlay" class="overlay-count hidden">3</div>
+                    <div id="flash-overlay" class="overlay-flash"></div>
+                    <div class="camera-controls">
+                        <button id="capture-btn" class="pulse-btn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Result View (Photo Strip) -->
+                <div id="result-container" class="result-box hidden">
+                    <img id="photo-strip-output" src="" alt="Valentine Photo Strip" class="photo-strip">
+                    <div class="result-actions" style="margin-top: 20px; display: flex; gap: 20px;">
+                        <button id="save-btn" class="camera-btn">
+                            <i class="fas fa-download"></i> Save
+                        </button>
+                        <button id="retake-btn" class="camera-btn" style="border-color: #555; color: #888;">
+                            Retake
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WRITES BACK -->
+    <section id="writes-back" class="writes-back-section">
+        <div class="container-narrow">
+            <h2 class="text-title" style="color: var(--deep-burgundy); margin-bottom: 2rem;">A
+                Letter
+                for Me?</h2>
+
+            <div class="message-card" id="message-ui-card">
+                <!-- Input State -->
+                <div id="message-input-state">
+                    <textarea id="bubu-message" placeholder="Write your heart out..." maxlength="1000"></textarea>
+                    <div class="char-counter"><span id="char-count">0</span>/1000
+                    </div>
+                    <button id="send-rose-btn" class="send-btn" disabled>
+                        Send Letter 💌
+                    </button>
+                </div>
+
+                <!-- Success State -->
+                <div id="message-display-state" class="hidden">
+                    <div class="saved-message-content">
+                        <p id="saved-message-text"></p>
+                    </div>
+                    <div class="message-footer">
+                        <span class="message-timestamp" id="msg-timestamp"></span>
+                    </div>
+                    <p class="text-small" style="margin-top: 20px; color: var(--deep-burgundy);">
+                        I'll
+                        read this properly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="act" id="act-5">
+        <div class="punjabi-bg">ਪਿਆਰ</div>
+        <!-- "Pyar" meaning Love/Affection in Punjabi -->
+        <div class="container-wide" style="position: relative; z-index: 2;">
+            <p class="text-title italic" style="text-align: center; margin-bottom: 1rem;">Just us <3 </p>
+                    <div class="together-video-wrapper">
+                        <iframe src="https://drive.google.com/file/d/1K7MymXVj6sbHNOw5quZwMVlJUfOAJY6E/preview"
+                            width="100%" height="560" frameborder="0" allow="autoplay; fullscreen"></iframe>
+                    </div>
+                    <div class="punjabi-card">
+                        <h3 class="text-title font-serif" style="color: var(--antique-gold);">ਸਾਡਾ ਪਿਆਰ
+                        </h3>
+                        <!-- True Love -->
+                        <p class="text-body" style="margin-top: 1rem;">We
+                            are building something that goes beyond just
+                            today. It is about family,
+                            respect,
+                            and a legacy of kindness. Like the roots of an
+                            old tree,
+                            we grow deeper in silence so we can stand tall
+                            in the storm. </p>
+                    </div>
+        </div>
+        <!-- TIME CAPSULE -->
+        <div class="time-capsule-trigger">
+            <h3 class="text-title serif">Open on 14 February 2027</h3>
+            <p class="text-small" style="opacity: 0.6; margin-bottom: 10px;">Not
+                everything is
+                meant for today.</p><button class="capsule-btn" id="capsuleBtn">Unlock
+                Early</button>
+        </div>
+        <!-- Future Content (Hidden) -->
+        <div class="future-content container-narrow" id="futureContent">
+            <p class="text-body font-serif italic">If you are reading
+                this,
+                we made it another year. I hope we are sitting somewhere
+                quiet. I hope I still look at you the same way (I know I
+                do). <br><br>This version of me wanted to tell you:
+                Thank you for waiting. Thank you for growing. </p>
+        </div>
+        </div>
+    </section>
+    <!-- Capsule Modal -->
+    <div class="capsule-modal" id="capsuleModal">
+        <div class="modal-content"><button class="close-modal" id="closeModal">&times;
+            </button>
+            <p class="text-subtitle font-serif" style="margin-bottom: 2rem;">
+                This wasn’t meant to be opened yet.</p>
+            <p class="text-body">Some things are better when earned with time.
+            </p>
+            <div style="height: 30px;"></div>
+            <p class="text-small italic" style="color: var(--rose-gold);">Be
+                patient with us.</p>
+        </div>
+    </div>
+    <!-- FINAL SECTION: SILENT CLOSE -->
+    <section class="act" id="final-act">
+        <div class="container-narrow">
+            <p class="text-subtitle font-serif delayed-line">You are seen.
+            </p>
+            <p class="text-subtitle font-serif delayed-line">You are chosen.
+            </p>
+            <div style="height: 30px;"></div>
+            <p class="text-title italic delayed-line" style="color: var(--rose-gold);">I love you.
+            </p>
+            <div style="height: 30px;"></div>
+            <p class="text-small delayed-line" style="opacity: 0.6;">
+                Valentine's Day, 2026</p>
+            <p class="text-small delayed-line italic" style="margin-top: 2rem;">
+                Forever.</p>
+        </div>
+    </section>
+    <script>gsap.registerPlugin(ScrollTrigger);
+
+        // ------------------------------------------------------------------
+        // AUDIO SYSTEM
+        // ------------------------------------------------------------------
+        const bgMusic = document.getElementById('bgMusic');
+        const muteBtn = document.getElementById('muteBtn');
+        let hasInteracted = false;
+
+        function startExperience() {
+            if (hasInteracted) return;
+            hasInteracted = true;
+
+            // Fade in Audio
+            bgMusic.volume = 0;
+            bgMusic.play();
+
+            gsap.to(bgMusic, {
+                volume: 0.15, duration: 4
+            });
+
+            // Start Act I Animations
+            playActSequence();
+        }
+
+        muteBtn.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play();
+
+                gsap.to(bgMusic, {
+                    volume: 0.15, duration: 1
+                });
+                muteBtn.textContent = "Sound On";
+            }
+
+            else {
+                gsap.to(bgMusic, {
+                    volume: 0, duration: 1, onComplete: () => bgMusic.pause()
+                });
+                muteBtn.textContent = "Sound Off";
+            }
+        });
+
+        document.body.addEventListener('click', startExperience, {
+            once: true
+        });
+
+        document.body.addEventListener('touchstart', startExperience, {
+            once: true
+        });
+
+        // ------------------------------------------------------------------
+        // PARTICLES
+        // ------------------------------------------------------------------
+        function createParticles() {
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.top = Math.random() * 100 + 'vh';
+                p.style.width = Math.random() * 4 + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDuration = (15 + Math.random() * 15) + 's';
+                p.style.animationDelay = (Math.random() * -20) + 's';
+                document.body.appendChild(p);
+            }
+        }
+
+        createParticles();
+
+        // ------------------------------------------------------------------
+        // CURSOR
+        // ------------------------------------------------------------------
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorGlow = document.querySelector('.cursor-glow');
+
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(cursorDot, {
+                x: e.clientX, y: e.clientY, duration: 0.1
+            });
+
+            gsap.to(cursorGlow, {
+                x: e.clientX, y: e.clientY, duration: 0.3
+            });
+        });
+
+        // ------------------------------------------------------------------
+        // NEW FEATURES LOGIC
+        // ------------------------------------------------------------------
+
+        // 1. RELATIONSHIP COUNTER
+        const relationshipStart = new Date("2026-01-26");
+        const today = new Date();
+        const timeDiff = today - relationshipStart;
+        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const monthsDiff = (today.getFullYear() - relationshipStart.getFullYear()) * 12 + (today.getMonth() - relationshipStart.getMonth());
+
+        // GSAP Animation for Counter
+        gsap.to('.relationship-counter', {
+
+            opacity: 1,
+            scrollTrigger: {
+                trigger: '.relationship-counter',
+                start: "top 80%"
+            }
+        });
+
+        ScrollTrigger.create({
+
+            trigger: '.relationship-counter',
+            start: "top 70%",
+            once: true,
+            onEnter: () => {
+
+                // Animate Days
+                gsap.to('#daysCount', {
+
+                    innerText: daysDiff,
+                    duration: 1.5,
+                    snap: {
+                        innerText: 1
+                    }
+
+                    ,
+                    ease: "power2.out"
+                });
+
+                // Animate Months
+                gsap.to('#monthsCount', {
+
+                    innerText: monthsDiff,
+                    duration: 1.5,
+                    snap: {
+                        innerText: 1
+                    }
+
+                    ,
+                    ease: "power2.out",
+                    delay: 0.2
+                });
+            }
+        });
+
+        // 2. MEMORY LOCK
+        const memoryInput = document.getElementById('memoryInput');
+        const hiddenMemory = document.getElementById('hiddenMemory');
+        const secretAnswer = "dandiya"; // Lowercase check
+
+        memoryInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const ans = memoryInput.value.trim().toLowerCase();
+
+                if (ans === secretAnswer) {
+
+                    // Success
+                    gsap.to(memoryInput, {
+                        opacity: 0, duration: 0.5, onComplete: () => memoryInput.style.display = 'none'
+                    });
+                    hiddenMemory.style.display = 'block';
+
+                    gsap.to(hiddenMemory, {
+                        opacity: 1, duration: 1, delay: 0.5
+                    });
+
+                    // Audio Swell
+                    if (!bgMusic.paused) {
+                        gsap.to(bgMusic, {
+                            volume: 0.25, duration: 2, onComplete: () => gsap.to(bgMusic, {
+                                volume: 0.15, duration: 2, delay: 2
+                            })
+                        });
+                    }
+                }
+
+                else {
+                    // Fail - Shake
+                    memoryInput.classList.add('shake');
+
+                    setTimeout(() => {
+                        memoryInput.classList.remove('shake');
+                        memoryInput.value = '';
+                    }
+
+                        , 500);
+                }
+            }
+        });
+
+        // 3. TIME CAPSULE
+        const capsuleBtn = document.getElementById('capsuleBtn');
+        const capsuleModal = document.getElementById('capsuleModal');
+        const closeModal = document.getElementById('closeModal');
+        const futureContent = document.getElementById('futureContent');
+        const targetDate = new Date("2027-02-14");
+
+        capsuleBtn.addEventListener('click', () => {
+            const now = new Date();
+
+            if (now >= targetDate) {
+
+                // Unlock
+                gsap.to(capsuleBtn.parentElement, {
+                    opacity: 0, duration: 0.5, onComplete: () => capsuleBtn.parentElement.style.display = 'none'
+                });
+                futureContent.style.display = 'block';
+
+                gsap.to(futureContent, {
+                    opacity: 1, duration: 2
+                });
+            }
+
+            else {
+                // Lock Modal
+                capsuleModal.classList.add('active');
+
+                if (!bgMusic.paused) {
+                    gsap.to(bgMusic, {
+                        volume: 0.05, duration: 0.5
+                    }); // Duck audio
+                }
+            }
+        });
+
+        closeModal.addEventListener('click', () => {
+            capsuleModal.classList.remove('active');
+
+            if (!bgMusic.paused) {
+                gsap.to(bgMusic, {
+                    volume: 0.15, duration: 1
+                }); // Restore audio
+            }
+        });
+
+        // ------------------------------------------------------------------
+        // ANIMATIONS (Existing)
+        // ------------------------------------------------------------------
+
+        // On Load
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+
+            // Animate mute button in
+            gsap.to(muteBtn, {
+                opacity: 0.5, delay: 1
+            });
+        });
+
+        function playActSequence() {
+            // Act I Reveal
+            const tl = gsap.timeline();
+
+            tl.to('.name-char', {
+                opacity: 1, y: 0, stagger: 0.1, duration: 1.5, ease: "power2.out"
+
+            }).to('.gold-rule', {
+                width: '100px', duration: 1.5, ease: "power2.out"
+            }
+
+                , "-=1").to('#intro-subtitle', {
+                    opacity: 1, y: -10, duration: 1.5
+                }
+
+                    , "-=1");
+        }
+
+        // Color Transitions (Scroll based background change)
+        const acts = [{
+            id: '#act-1', color: getComputedStyle(document.documentElement).getPropertyValue('--obsidian')
+        }
+
+            ,
+        {
+            id: '#act-2', color: getComputedStyle(document.documentElement).getPropertyValue('--charcoal')
+        }
+
+            ,
+        {
+            id: '#act-3', color: getComputedStyle(document.documentElement).getPropertyValue('--charcoal')
+        }
+
+            ,
+        {
+            id: '#act-4', color: getComputedStyle(document.documentElement).getPropertyValue('--warm-ink')
+        }
+
+            ,
+        {
+            id: '#act-5', color: getComputedStyle(document.documentElement).getPropertyValue('--sepia-dark')
+        }
+
+            ,
+        {
+            id: '#final-act', color: '#000000'
+        }
+
+        ];
+
+        acts.forEach((act, i) => {
+            ScrollTrigger.create({
+
+                trigger: act.id,
+                start: "top 50%",
+                end: "bottom 50%",
+                onEnter: () => gsap.to('body', {
+                    backgroundColor: act.color, duration: 1
+
+                }),
+                onEnterBack: () => gsap.to('body', {
+                    backgroundColor: act.color, duration: 1
+                })
+            });
+        });
+
+        // Act II: Text Reveal
+        gsap.utils.toArray('#act-2 .text-block').forEach((block) => {
+            gsap.to(block, {
+
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                scrollTrigger: {
+                    trigger: block,
+                    start: "top 80%"
+                }
+            });
+        });
+
+        // Act III: Video Scale
+        gsap.to('#travelVideo', {
+
+            scale: 1.05,
+            scrollTrigger: {
+                trigger: '.travel-video-container',
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 1
+            }
+        });
+
+        // Act III: Horizontal Scroll
+        const photoStrip = document.getElementById('photoStrip');
+        const photoStripWrapper = document.querySelector('.photo-strip-wrapper');
+
+        gsap.to(photoStrip, {
+
+            x: () => -(photoStrip.scrollWidth - window.innerWidth),
+            ease: "none",
+            scrollTrigger: {
+                trigger: photoStripWrapper,
+                start: "center center",
+                end: () => "+=" + (photoStrip.scrollWidth - window.innerWidth + 200), // Add buffer
+                pin: true,
+                scrub: 1,
+                anticipatePin: 1,
+                invalidateOnRefresh: true
+            }
+        });
+
+        // Act IV: Promise Letter
+        const tlLetter = gsap.timeline({
+            scrollTrigger: {
+                trigger: '.promise-letter',
+                start: "top 70%"
+            }
+        });
+
+        tlLetter.to('.promise-letter', {
+            opacity: 1, y: 0, duration: 1
+
+        }).to('.wax-seal', {
+            scale: 1, rotation: 0, duration: 0.6, ease: "back.out(1.7)"
+        });
+
+        // ------------------------------------------------------------------
+        // VIDEO MUSIC PAUSE/RESUME LOGIC
+        // ------------------------------------------------------------------
+        // Get all videos on the page
+        const allVideos = document.querySelectorAll('video');
+
+        allVideos.forEach(video => {
+            // Pause background music when video starts playing
+            video.addEventListener('play', () => {
+                if (!bgMusic.paused) {
+                    gsap.to(bgMusic, {
+                        volume: 0,
+                        duration: 0.5,
+                        onComplete: () => bgMusic.pause()
+                    });
+                }
+            });
+
+            // Resume background music when video ends or is paused
+            video.addEventListener('pause', () => {
+                if (bgMusic.paused && hasInteracted) {
+                    bgMusic.play();
+                    gsap.to(bgMusic, {
+                        volume: 0.15,
+                        duration: 1
+                    });
+                }
+            });
+
+            video.addEventListener('ended', () => {
+                if (bgMusic.paused && hasInteracted) {
+                    bgMusic.play();
+                    gsap.to(bgMusic, {
+                        volume: 0.15,
+                        duration: 1
+                    });
+                }
+            });
+        });
+
+        // Act V: Together Video (Replaced with Google Drive Embed)
+        /*
+        const togetherVid = document.getElementById('togetherVideo');
+        const playContainer = document.getElementById('playTogetherContainer');
+        const playOverlay = document.querySelector('.play-overlay');
+
+        playContainer.addEventListener('click', () => {
+            gsap.to(togetherVid, {
+                filter: 'blur(0px)', duration: 1
+            });
+            togetherVid.play();
+            playOverlay.style.opacity = 0;
+        });
+        */
+
+        // Final Act: Silent Close
+        ScrollTrigger.create({
+
+            trigger: '#final-act',
+            start: "top 60%",
+            onEnter: () => {
+
+                // Fade out music
+                gsap.to(bgMusic, {
+                    volume: 0, duration: 3
+                });
+
+                // Show text
+                const endTl = gsap.timeline({
+                    delay: 1
+                });
+
+                document.querySelectorAll('.delayed-line').forEach((line, index) => {
+                    endTl.to(line, {
+                        opacity: 1, y: 0, duration: 1.5
+                    }
+
+                        , "+=0.5");
+                });
+            }
+        });
+
+
+        // ------------------------------------------------------------------
+        // LETTER WRITING LOGIC
+        // ------------------------------------------------------------------
+        const messageInputState = document.getElementById('message-input-state');
+        const messageDisplayState = document.getElementById('message-display-state');
+        const bubuMessageInput = document.getElementById('bubu-message');
+        const sendRoseBtn = document.getElementById('send-rose-btn');
+        const charCountSpan = document.getElementById('char-count');
+        const savedMessageText = document.getElementById('saved-message-text');
+        const msgTimestamp = document.getElementById('msg-timestamp');
+
+        // Initialize EmailJS
+        (function () {
+            emailjs.init("QEXjVGLuKtsIIVcj1");
+        })();
+
+        // Check Local Storage
+        const savedMsg = localStorage.getItem('valentine_bubu_message');
+        const savedTime = localStorage.getItem('valentine_msg_time');
+
+        if (savedMsg) {
+            showSavedMessage(savedMsg, savedTime);
+        }
+
+        // Char Counter
+        bubuMessageInput?.addEventListener('input', (e) => {
+            const len = e.target.value.length;
+            if (charCountSpan) charCountSpan.innerText = len;
+            if (len > 0) {
+                sendRoseBtn.removeAttribute('disabled');
+            } else {
+                sendRoseBtn.setAttribute('disabled', 'true');
+            }
+        });
+
+        // Send Logic
+        sendRoseBtn?.addEventListener('click', () => {
+            const msg = bubuMessageInput.value.trim();
+            if (!msg) return;
+
+            const originalBtnText = sendRoseBtn.innerHTML;
+            sendRoseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            sendRoseBtn.disabled = true;
+
+            const now = new Date();
+            const timeStr = now.toLocaleDateString() + ' • ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            emailjs.send("service_o93istz", "template_xwuol7s", {
+                message: msg,
+                bubu_message: msg,
+                time_sent: timeStr,
+                to_name: "My Love",
+                reply_to: "bubu@love.com"
+            }).then(
+                function (response) {
+                    console.log("SUCCESS!", response.status, response.text);
+                    localStorage.setItem('valentine_bubu_message', msg);
+                    localStorage.setItem('valentine_msg_time', timeStr);
+
+                    gsap.to(messageInputState, {
+                        opacity: 0,
+                        scale: 0.95,
+                        duration: 0.5,
+                        onComplete: () => {
+                            showSavedMessage(msg, timeStr);
+                        }
+                    });
+                },
+                function (error) {
+                    console.error("FAILED...", error);
+                    alert("Email failed to send. Please check the network.");
+                    sendRoseBtn.innerHTML = originalBtnText;
+                    sendRoseBtn.disabled = false;
+                }
+            );
+        });
+
+        function showSavedMessage(msg, time) {
+            if (messageInputState) messageInputState.classList.add('hidden');
+            if (messageDisplayState) {
+                messageDisplayState.classList.remove('hidden');
+                if (savedMessageText) savedMessageText.innerText = msg;
+                if (msgTimestamp) msgTimestamp.innerText = time;
+
+                gsap.from(messageDisplayState, {
+                    opacity: 0,
+                    y: 20,
+                    duration: 0.8,
+                    ease: "power2.out"
+                });
+            }
+        }
+    </script>
+    <script src="photobooth.js"></script>
+</body>
+
+</html>
